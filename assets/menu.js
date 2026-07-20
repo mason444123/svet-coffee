@@ -249,11 +249,11 @@
 
   function menuGroups(categories) {
     var sets = [
-      { id: 'coffee', title: 'Кофе', eyebrow: 'Эспрессо · авторский · холодный', image: 'assets/menu-coffee.png', ids: ['coffee-classics','signature-coffee','cold-coffee','summer-coffee'] },
-      { id: 'drinks', title: 'Лимонады', eyebrow: 'Чай · лимонады · bubble tea', image: 'assets/menu-lemonade.png', ids: ['bubble-tea','not-coffee','lemonades','cold-drinks','tea','summer-lemonades'] },
-      { id: 'food', title: 'Еда', eyebrow: 'Завтраки · вафли · сэндвичи', image: 'assets/menu-food.png', ids: ['savory-waffles','pizza-snacks','salads','breakfasts'] },
-      { id: 'sweet', title: 'Сладкое', eyebrow: 'Вафли и десерты', image: 'assets/menu-dessert.png', ids: ['sweet-waffles'] },
-      { id: 'seasonal', title: 'Сезонное', eyebrow: 'Лето в городе', image: 'assets/menu-seasonal.png', ids: ['summer-coffee','summer-lemonades'] }
+      { id: 'coffee', title: 'Кофе', eyebrow: 'Эспрессо · авторский · холодный', image: 'assets/menu-coffee.webp', ids: ['coffee-classics','signature-coffee','cold-coffee','summer-coffee'] },
+      { id: 'drinks', title: 'Лимонады', eyebrow: 'Чай · лимонады · bubble tea', image: 'assets/menu-lemonade.webp', ids: ['bubble-tea','not-coffee','lemonades','cold-drinks','tea','summer-lemonades'] },
+      { id: 'food', title: 'Еда', eyebrow: 'Завтраки · вафли · сэндвичи', image: 'assets/menu-food.webp', ids: ['savory-waffles','pizza-snacks','salads','breakfasts'] },
+      { id: 'sweet', title: 'Сладкое', eyebrow: 'Вафли и десерты', image: 'assets/menu-dessert.webp', ids: ['sweet-waffles'] },
+      { id: 'seasonal', title: 'Сезонное', eyebrow: 'Лето в городе', image: 'assets/menu-seasonal.webp', ids: ['summer-coffee','summer-lemonades'] }
     ];
     return sets.map(function (group) { group.categories = categories.filter(function (cat) { return group.ids.indexOf(cat.id) !== -1; }); return group; }).filter(function (group) { return group.categories.length; });
   }
@@ -314,7 +314,7 @@
       var tones = ['#e8ddd1', '#dce5df', '#ead6cf', '#ece2c9', '#dcd4e6'];
       card.style.cssText = 'display:grid;place-items:center;flex:0 0 auto;width:min(74vw,360px);height:min(74vw,360px);background:'+tones[i]+';color:#1b1613;border-radius:2px;border:1px solid rgba(35,27,23,.10);scroll-snap-align:center;transition:transform 420ms '+MOTION_EASE+',opacity 420ms '+MOTION_EASE+',box-shadow 420ms '+MOTION_EASE+';';
       card.setAttribute('aria-label', 'Открыть категорию ' + group.title); card.setAttribute('aria-pressed', 'false');
-      var image = document.createElement('img'); image.src = group.image; image.alt = ''; image.loading = 'lazy'; image.className = 'absolute inset-0 w-full h-full object-cover'; image.style.transform = 'scale(1.02)'; card.appendChild(image);
+      var image = document.createElement('img'); image.src = group.image; image.alt = ''; image.loading = 'eager'; image.decoding = 'async'; image.className = 'absolute inset-0 w-full h-full object-cover'; image.style.transform = 'scale(1.02)'; card.appendChild(image);
       var titleLayer = el('span', 'absolute inset-x-0 top-0 h-[34%] flex items-center justify-center px-5 text-center');
       titleLayer.style.cssText = 'background:rgba(250,247,242,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.42);';
       titleLayer.appendChild(el('span', 'font-headline-md text-headline-md tracking-wide', group.title.toUpperCase())); card.appendChild(titleLayer);
