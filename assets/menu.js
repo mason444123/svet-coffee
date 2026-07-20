@@ -390,7 +390,7 @@
 
     function setOverlay(opened) {
       if (opened) { overlay.classList.remove('hidden'); requestAnimationFrame(function () { overlay.classList.remove('opacity-0'); panel.classList.remove('translate-y-full'); }); document.body.style.overflow = 'hidden'; close.focus(); }
-      else { overlay.classList.add('opacity-0'); panel.classList.add('translate-y-full'); document.body.style.overflow = ''; setTimeout(function () { overlay.classList.add('hidden'); }, 300); }
+      else { overlay.classList.add('opacity-0'); panel.classList.add('translate-y-full'); cartPanel.classList.add('hidden'); document.body.style.overflow = ''; setTimeout(function () { overlay.classList.add('hidden'); }, 300); }
     }
     open.addEventListener('click', function () { setOverlay(true); }); close.addEventListener('click', function () { setOverlay(false); });
     overlay.addEventListener('click', function (event) { if (event.target === overlay) setOverlay(false); });
@@ -427,8 +427,10 @@
     shop.cartPanel.classList.add('hidden');
     var modal = el('div', 'fixed inset-0 z-[95] bg-scrim/50 p-4 grid place-items-end md:place-items-center');
     var form = el('form', 'w-full max-w-xl rounded-3xl bg-surface p-6 md:p-8'); form.noValidate = true;
-    form.appendChild(el('h2', 'font-headline-lg text-headline-lg text-primary mb-2', 'Оформление заказа'));
-    form.appendChild(el('p', 'font-body-md text-body-md text-on-surface-variant mb-6', 'Проверьте контакты — состав корзины уже добавлен.'));
+    var formTop = el('div', 'flex items-start justify-between gap-4 mb-6');
+    var formTitle = el('div', ''); formTitle.appendChild(el('h2', 'font-headline-lg text-headline-lg text-primary mb-2', 'Оформление заказа')); formTitle.appendChild(el('p', 'font-body-md text-body-md text-on-surface-variant', 'Проверьте контакты — состав корзины уже добавлен.'));
+    var closeCheckout = createButton('close', 'material-symbols-outlined w-11 h-11 shrink-0 rounded-full bg-surface-container-high text-primary grid place-items-center'); closeCheckout.setAttribute('aria-label', 'Закрыть оформление'); closeCheckout.addEventListener('click', function () { modal.remove(); });
+    formTop.appendChild(formTitle); formTop.appendChild(closeCheckout); form.appendChild(formTop);
     [['name','Имя','Ваше имя'],['phone','Телефон','+7 900 000-00-00'],['address','Адрес','Город, улица, дом, квартира'],['comment','Комментарий','Подъезд, домофон или пожелания']].forEach(function (field) { var label=el('label','block mb-4'); label.appendChild(el('span','block font-label-md text-label-md text-primary mb-2',field[1])); var input=document.createElement(field[0] === 'comment' ? 'textarea' : 'input'); input.name=field[0]; input.placeholder=field[2]; input.className='w-full rounded-xl border border-outline-variant bg-surface px-4 py-3 font-body-md text-body-md'; if(field[0] !== 'comment') input.required=true; label.appendChild(input); form.appendChild(label); });
     var status = el('p', 'min-h-5 font-body-sm text-body-sm text-secondary mb-3'); form.appendChild(status);
     var submit=createButton('Отправить заказ','w-full h-12 rounded-full bg-primary text-on-primary font-label-md text-label-md'); form.appendChild(submit); modal.appendChild(form); document.body.appendChild(modal);
