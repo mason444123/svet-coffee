@@ -376,14 +376,21 @@
             link.addEventListener('click', closeMenu);
         });
 
-        // Parallax effect for hero image
+        // Composited rAF parallax: one transform per frame, never a layout update on every scroll event.
         const heroImage = document.getElementById('heroImage');
-        window.addEventListener('scroll', () => {
-            const scrollPos = window.scrollY;
-            if(scrollPos < window.innerHeight) {
-                heroImage.style.transform = `translateY(${scrollPos * 0.3}px) scale(1.05)`;
-            }
-        });
+        let heroFramePending = false;
+        if (heroImage) {
+            heroImage.style.willChange = 'transform';
+            window.addEventListener('scroll', () => {
+                if (heroFramePending) return;
+                heroFramePending = true;
+                requestAnimationFrame(() => {
+                    const scrollPos = window.scrollY;
+                    if (scrollPos < window.innerHeight) heroImage.style.transform = `translate3d(0, ${scrollPos * 0.3}px, 0) scale(1.05)`;
+                    heroFramePending = false;
+                });
+            }, { passive: true });
+        }
     </script>
 <script defer src="assets/menu.js?v=2"></script>
 </body></html>

@@ -111,7 +111,9 @@
     return card;
   }
 
-  var ACCORDION_MS = 340;
+  var ACCORDION_MS = 440;
+  var SHEET_MS = 460;
+  var MOTION_EASE = 'cubic-bezier(.22, 1, .36, 1)';
 
   function reducedMotion() {
     return typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -123,6 +125,7 @@
     panel.style.transform = '';
     panel.style.overflow = '';
     panel.style.transition = '';
+    panel.style.willChange = '';
   }
 
   function animatePanel(panel, expand) {
@@ -136,7 +139,8 @@
       return;
     }
     panel.style.overflow = 'hidden';
-    panel.style.transition = 'height ' + ACCORDION_MS + 'ms ease, opacity ' + ACCORDION_MS + 'ms ease, transform ' + ACCORDION_MS + 'ms ease';
+    panel.style.transition = 'height ' + ACCORDION_MS + 'ms ' + MOTION_EASE + ', opacity ' + ACCORDION_MS + 'ms ' + MOTION_EASE + ', transform ' + ACCORDION_MS + 'ms ' + MOTION_EASE;
+    panel.style.willChange = 'height, opacity, transform';
     if (expand) {
       panel.hidden = false;
       panel.style.height = '0px';
@@ -170,7 +174,7 @@
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     var icon = btn.querySelector('[data-category-icon]');
     if (icon) {
-      icon.style.transition = reducedMotion() ? '' : 'transform ' + ACCORDION_MS + 'ms ease';
+      icon.style.transition = reducedMotion() ? '' : 'transform ' + ACCORDION_MS + 'ms ' + MOTION_EASE;
       icon.style.transform = open ? 'rotate(180deg)' : '';
     }
     if (animate) {
@@ -373,9 +377,13 @@
     launcher.appendChild(copy); launcher.appendChild(open);
     inner.appendChild(launcher);
 
-    var overlay = el('div', 'fixed inset-0 z-[80] hidden opacity-0 transition-opacity duration-300 bg-scrim/50 backdrop-blur-sm p-0 md:p-8');
+    var overlay = el('div', 'fixed inset-0 z-[80] hidden opacity-0 bg-scrim/50 backdrop-blur-sm p-0 md:p-8');
+    overlay.style.transition = 'opacity ' + SHEET_MS + 'ms ' + MOTION_EASE;
+    overlay.style.willChange = 'opacity';
     overlay.setAttribute('role', 'dialog'); overlay.setAttribute('aria-modal', 'true'); overlay.setAttribute('aria-label', 'Меню кофейни');
-    var panel = el('div', 'absolute inset-x-0 bottom-0 max-h-[92svh] overflow-hidden rounded-t-3xl bg-surface shadow-2xl translate-y-full transition-transform duration-300 md:relative md:inset-auto md:mx-auto md:max-w-6xl md:max-h-full md:h-full md:rounded-3xl');
+    var panel = el('div', 'absolute inset-x-0 bottom-0 max-h-[92svh] overflow-hidden rounded-t-3xl bg-surface shadow-2xl translate-y-full md:relative md:inset-auto md:mx-auto md:max-w-6xl md:max-h-full md:h-full md:rounded-3xl');
+    panel.style.transition = 'transform ' + SHEET_MS + 'ms ' + MOTION_EASE;
+    panel.style.willChange = 'transform';
     var top = el('div', 'flex items-center justify-between gap-4 px-5 py-5 md:px-8 border-b border-outline-variant/35');
     var title = el('div', ''); title.appendChild(el('p', 'font-label-sm text-label-sm text-secondary uppercase tracking-[0.18em]', 'Свет. кофейня')); title.appendChild(el('h2', 'font-headline-md text-headline-md text-primary', 'Выберите позиции'));
     var close = createButton('close', 'material-symbols-outlined w-11 h-11 rounded-full bg-surface-container-high text-primary grid place-items-center'); close.setAttribute('aria-label', 'Закрыть меню'); top.appendChild(title); top.appendChild(close); panel.appendChild(top);
@@ -386,17 +394,30 @@
     var cartButton = createButton('', 'fixed z-[81] bottom-5 right-5 h-14 px-5 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-xl hidden items-center gap-2');
     cartButton.setAttribute('aria-label', 'Открыть корзину'); document.body.appendChild(cartButton);
     var cartPanel = el('aside', 'fixed z-[90] inset-x-4 bottom-4 hidden rounded-2xl bg-surface shadow-2xl border border-outline-variant/35 p-5 md:left-auto md:w-[420px]');
+    cartPanel.style.transition = 'opacity 320ms ' + MOTION_EASE + ', transform 320ms ' + MOTION_EASE;
+    cartPanel.style.willChange = 'opacity, transform';
     document.body.appendChild(cartPanel);
+
+    function setCartPanel(opened) {
+      if (opened) {
+        cartPanel.classList.remove('hidden');
+        cartPanel.style.opacity = '0'; cartPanel.style.transform = 'translate3d(0, 14px, 0)'; cartPanel.style.pointerEvents = 'none';
+        requestAnimationFrame(function () { cartPanel.style.opacity = '1'; cartPanel.style.transform = 'translate3d(0, 0, 0)'; cartPanel.style.pointerEvents = ''; });
+      } else {
+        cartPanel.style.opacity = '0'; cartPanel.style.transform = 'translate3d(0, 14px, 0)'; cartPanel.style.pointerEvents = 'none';
+        setTimeout(function () { cartPanel.classList.add('hidden'); }, 320);
+      }
+    }
 
     function setOverlay(opened) {
       if (opened) { overlay.classList.remove('hidden'); requestAnimationFrame(function () { overlay.classList.remove('opacity-0'); panel.classList.remove('translate-y-full'); }); document.body.style.overflow = 'hidden'; close.focus(); }
-      else { overlay.classList.add('opacity-0'); panel.classList.add('translate-y-full'); cartPanel.classList.add('hidden'); document.body.style.overflow = ''; setTimeout(function () { overlay.classList.add('hidden'); }, 300); }
+      else { overlay.classList.add('opacity-0'); panel.classList.add('translate-y-full'); setCartPanel(false); document.body.style.overflow = ''; setTimeout(function () { overlay.classList.add('hidden'); }, SHEET_MS); }
     }
     open.addEventListener('click', function () { setOverlay(true); }); close.addEventListener('click', function () { setOverlay(false); });
     overlay.addEventListener('click', function (event) { if (event.target === overlay) setOverlay(false); });
-    document.addEventListener('keydown', function (event) { if (event.key === 'Escape') { setOverlay(false); cartPanel.classList.add('hidden'); } });
-    cartButton.addEventListener('click', function () { cartPanel.classList.toggle('hidden'); renderCart(); });
-    shop = { overlay: overlay, panel: panel, cartButton: cartButton, cartPanel: cartPanel, setOverlay: setOverlay };
+    document.addEventListener('keydown', function (event) { if (event.key === 'Escape') { setOverlay(false); setCartPanel(false); } });
+    cartButton.addEventListener('click', function () { setCartPanel(cartPanel.classList.contains('hidden')); renderCart(); });
+    shop = { overlay: overlay, panel: panel, cartButton: cartButton, cartPanel: cartPanel, setOverlay: setOverlay, setCartPanel: setCartPanel };
   }
 
   function renderCart() {
@@ -424,16 +445,19 @@
 
   function openCheckout() {
     if (!shop || !cart.length) return;
-    shop.cartPanel.classList.add('hidden');
+    shop.setCartPanel(false);
     var modal = el('div', 'fixed inset-0 z-[95] bg-scrim/50 p-4 grid place-items-end md:place-items-center');
+    modal.style.opacity = '0'; modal.style.transition = 'opacity 320ms ' + MOTION_EASE; modal.style.willChange = 'opacity';
     var form = el('form', 'w-full max-w-xl rounded-3xl bg-surface p-6 md:p-8'); form.noValidate = true;
+    form.style.opacity = '0'; form.style.transform = 'translate3d(0, 18px, 0)'; form.style.transition = 'opacity 360ms ' + MOTION_EASE + ', transform 360ms ' + MOTION_EASE; form.style.willChange = 'opacity, transform';
     var formTop = el('div', 'flex items-start justify-between gap-4 mb-6');
     var formTitle = el('div', ''); formTitle.appendChild(el('h2', 'font-headline-lg text-headline-lg text-primary mb-2', 'Оформление заказа')); formTitle.appendChild(el('p', 'font-body-md text-body-md text-on-surface-variant', 'Проверьте контакты — состав корзины уже добавлен.'));
-    var closeCheckout = createButton('close', 'material-symbols-outlined w-11 h-11 shrink-0 rounded-full bg-surface-container-high text-primary grid place-items-center'); closeCheckout.setAttribute('aria-label', 'Закрыть оформление'); closeCheckout.addEventListener('click', function () { modal.remove(); });
+    var closeCheckout = createButton('close', 'material-symbols-outlined w-11 h-11 shrink-0 rounded-full bg-surface-container-high text-primary grid place-items-center'); closeCheckout.setAttribute('aria-label', 'Закрыть оформление'); closeCheckout.addEventListener('click', function () { modal.style.opacity = '0'; form.style.opacity = '0'; form.style.transform = 'translate3d(0, 18px, 0)'; setTimeout(function () { modal.remove(); }, 360); });
     formTop.appendChild(formTitle); formTop.appendChild(closeCheckout); form.appendChild(formTop);
     [['name','Имя','Ваше имя'],['phone','Телефон','+7 900 000-00-00'],['address','Адрес','Город, улица, дом, квартира'],['comment','Комментарий','Подъезд, домофон или пожелания']].forEach(function (field) { var label=el('label','block mb-4'); label.appendChild(el('span','block font-label-md text-label-md text-primary mb-2',field[1])); var input=document.createElement(field[0] === 'comment' ? 'textarea' : 'input'); input.name=field[0]; input.placeholder=field[2]; input.className='w-full rounded-xl border border-outline-variant bg-surface px-4 py-3 font-body-md text-body-md'; if(field[0] !== 'comment') input.required=true; label.appendChild(input); form.appendChild(label); });
     var status = el('p', 'min-h-5 font-body-sm text-body-sm text-secondary mb-3'); form.appendChild(status);
     var submit=createButton('Отправить заказ','w-full h-12 rounded-full bg-primary text-on-primary font-label-md text-label-md'); form.appendChild(submit); modal.appendChild(form); document.body.appendChild(modal);
+    requestAnimationFrame(function () { modal.style.opacity = '1'; form.style.opacity = '1'; form.style.transform = 'translate3d(0, 0, 0)'; });
     form.addEventListener('submit', function (event) { event.preventDefault(); submitOrder(form, status, submit); });
   }
 
