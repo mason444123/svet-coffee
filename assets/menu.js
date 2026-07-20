@@ -280,15 +280,18 @@
   function renderCategoryCarousel(categories, filtersEl, catalogEl) {
     clear(filtersEl);
     var groups = menuGroups(categories); var active = 0;
-    var shell = el('div', 'relative');
+    var shell = el('div', 'relative w-full');
+    shell.style.width = '100%';
     var rail = el('div', 'flex gap-4 overflow-x-auto py-3');
     rail.setAttribute('aria-label', 'Все категории меню');
     rail.style.cssText += 'scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-inline:calc(50% - 118px);-webkit-overflow-scrolling:touch;scrollbar-width:none;';
     var cards = [];
+    function centerActive(behavior) { var card = cards[active]; if (card) rail.scrollTo({ left: card.offsetLeft - (rail.clientWidth - card.offsetWidth) / 2, behavior: behavior || (reducedMotion() ? 'auto' : 'smooth') }); }
+    filtersEl._centerCarousel = function () { centerActive('auto'); };
     function select(index, focus) {
       active = (index + groups.length) % groups.length;
       cards.forEach(function (card, i) { var on = i === active; card.setAttribute('aria-pressed', on ? 'true' : 'false'); card.style.opacity = on ? '1' : '.52'; card.style.transform = on ? 'scale(1)' : 'scale(.88)'; card.style.boxShadow = on ? '0 24px 55px -24px rgba(23,19,16,.38)' : 'none'; });
-      var card = cards[active]; rail.scrollTo({ left: card.offsetLeft - (rail.clientWidth - card.offsetWidth) / 2, behavior: reducedMotion() ? 'auto' : 'smooth' });
+      centerActive();
       renderFocusedGroup(groups[active], catalogEl); if (focus) catalogEl.scrollTo ? catalogEl.scrollTo({ top: 0, behavior: reducedMotion() ? 'auto' : 'smooth' }) : null;
     }
     groups.forEach(function (group, i) {
@@ -434,7 +437,7 @@
     }
 
     function setOverlay(opened) {
-      if (opened) { overlay.classList.remove('hidden'); requestAnimationFrame(function () { overlay.classList.remove('opacity-0'); panel.classList.remove('translate-y-full'); }); document.body.style.overflow = 'hidden'; close.focus(); }
+      if (opened) { overlay.classList.remove('hidden'); requestAnimationFrame(function () { overlay.classList.remove('opacity-0'); panel.classList.remove('translate-y-full'); if (filters._centerCarousel) filters._centerCarousel(); }); document.body.style.overflow = 'hidden'; close.focus(); }
       else { overlay.classList.add('opacity-0'); panel.classList.add('translate-y-full'); setCartPanel(false); document.body.style.overflow = ''; setTimeout(function () { overlay.classList.add('hidden'); }, SHEET_MS); }
     }
     open.addEventListener('click', function () { setOverlay(true); }); close.addEventListener('click', function () { setOverlay(false); });
