@@ -188,7 +188,7 @@
 <div class="absolute inset-0 bg-surface/30"></div> <!-- Subtle overlay for text readability -->
 </div>
 <div class="relative z-10 flex flex-col items-center text-center px-margin-mobile mt-20 hero-arrival">
-<h1 class="font-headline-xl text-primary text-[clamp(6rem,18vw,15rem)] leading-none tracking-[-0.07em]">Свет.</h1>
+<h1 class="font-headline-xl text-white text-[clamp(6rem,18vw,15rem)] leading-none tracking-[-0.07em]">Свет.</h1>
 </div>
 <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
 <span class="material-symbols-outlined text-primary">arrow_downward</span>
@@ -376,21 +376,7 @@
             link.addEventListener('click', closeMenu);
         });
 
-        // Composited rAF parallax: one transform per frame, never a layout update on every scroll event.
-        const heroImage = document.getElementById('heroImage');
-        let heroFramePending = false;
-        if (heroImage) {
-            heroImage.style.willChange = 'transform';
-            window.addEventListener('scroll', () => {
-                if (heroFramePending) return;
-                heroFramePending = true;
-                requestAnimationFrame(() => {
-                    const scrollPos = window.scrollY;
-                    if (scrollPos < window.innerHeight) heroImage.style.transform = `translate3d(0, ${scrollPos * 0.3}px, 0) scale(1.05)`;
-                    heroFramePending = false;
-                });
-            }, { passive: true });
-        }
+        // Hero remains static while scrolling: moving a large image on scroll caused visible mobile jank.
     </script>
-<script defer src="assets/menu.js?v=3"></script>
+<script defer src="assets/menu.js?v=4"></script>
 </body></html>
