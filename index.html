@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en"><head>
+<html lang="ru"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Свет. Coffee Rituals</title>
@@ -12,7 +12,6 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
 <!-- Material Symbols -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style>
         .material-symbols-outlined {
@@ -140,7 +139,7 @@
 <body class="bg-surface text-on-surface font-body-md overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
 <!-- TopAppBar JSON Component -->
 <header class="fixed top-0 w-full z-50 no-border bg-transparent flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 transition-all duration-300" id="topAppBar">
-<button aria-label="Menu" class="text-primary dark:text-inverse-primary hover:opacity-70 transition-opacity scale-95 duration-200" id="menuButton">
+<button aria-label="Открыть меню" class="text-primary dark:text-inverse-primary hover:opacity-70 transition-opacity scale-95 duration-200" id="menuButton">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
 </button>
 <a class="font-headline-md text-headline-md tracking-widest text-primary dark:text-inverse-primary" href="#">Свет.</a>
@@ -157,23 +156,23 @@
 <nav class="flex flex-col gap-4">
 <a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#our-story">
 <span class="material-symbols-outlined">history_edu</span>
-                Our Story
+                О кофейне
             </a>
 <a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#menu">
 <span class="material-symbols-outlined">local_cafe</span>
-                The Coffee
+                Меню
             </a>
-<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#">
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#contest">
 <span class="material-symbols-outlined">map</span>
-                Locations
+                Конкурсная коллекция
             </a>
 <a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#contact">
 <span class="material-symbols-outlined">mail</span>
-                Subscription
+                Доставка
             </a>
-<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#contact">
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#footer">
 <span class="material-symbols-outlined">call</span>
-                Contact
+                Контакты
             </a>
 </nav>
 </div>
@@ -193,20 +192,17 @@
 <span class="material-symbols-outlined text-primary">arrow_downward</span>
 </div>
 </section>
-<!-- Our Story Section -->
+<!-- Раздел "О кофейне" -->
 <section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto fade-in" id="our-story">
 <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
 <div class="md:col-span-5 md:col-start-2">
-<h2 class="font-headline-lg text-headline-lg text-primary mb-8">Quiet Mornings.</h2>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-8">Тихие утра.</h2>
 <p class="font-body-lg text-body-lg text-on-surface-variant mb-6 leading-relaxed">
-                        Свет (Light) was born from the desire to create a sanctuary. A place where the ritual of coffee is respected, unhurried, and precise. We believe in high-end minimalism, focusing only on what matters: the bean, the water, and the quiet moment before the day begins.
+                        Здесь спокойно. Мы готовим кофе и оставляем место для паузы — чтобы можно было налить чашку, выдохнуть и побыть в тишине перед началом дня.
                     </p>
 <p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed">
-                        Sourced from single estates, roasted light to preserve origin character, and brewed with intention. Our spaces are designed to reflect the clarity we seek in our cups—luminous, calm, and grounded.
+                        Светлое пространство, мягкий свет и неспешные ритуалы. Приходите, чтобы задержаться на пару минут или остаться подольше.
                     </p>
-<a class="inline-flex items-center gap-2 font-label-md text-label-md text-primary border-b border-primary pb-1 hover:opacity-70 transition-opacity" href="#">
-                        Read full story <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-</a>
 </div>
 <div class="md:col-span-4 md:col-start-8 mt-12 md:mt-0 relative">
 <div class="aspect-[3/4] rounded-lg overflow-hidden relative ambient-shadow bg-tertiary-fixed-dim">
@@ -219,51 +215,22 @@
 <section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-low fade-in" id="menu">
 <div class="max-w-container-max mx-auto">
 <div class="text-center mb-16">
-<h2 class="font-headline-lg text-headline-lg text-primary mb-4">The Ritual.</h2>
-<p class="font-body-md text-body-md text-on-surface-variant">Simple, precise, luminous.</p>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Меню</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Кофе, напитки, завтраки и еда.</p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-<!-- Card 1 -->
-<div class="bg-surface rounded-xl p-8 ambient-shadow hover:-translate-y-1 transition-transform duration-300 flex flex-col h-full border border-outline-variant/30">
-<div class="flex justify-between items-start mb-6">
-<h3 class="font-headline-md text-headline-md text-primary">Espresso</h3>
-<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">€3.50</span>
+<p id="menuStatus" class="font-body-md text-body-md text-on-surface-variant text-center mb-8">Загружаем меню…</p>
+<nav id="menuCategoryFilters" aria-label="Категории меню" class="flex overflow-x-auto whitespace-nowrap md:flex-wrap md:whitespace-normal md:overflow-visible gap-2 mb-8 pb-2"></nav>
+<div id="menuCatalog" class="space-y-4"></div>
+<aside id="menuExtras" class="mt-12"></aside>
 </div>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">A concentrated shot of our seasonal single-origin. Bright, syrupy, and intensely aromatic. Served with sparkling water.</p>
-<div class="flex gap-2">
-<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Floral</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Washed</span>
+</section>
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop fade-in" id="contest">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Конкурсная коллекция</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Свет. × МАРТ Цветы</p>
 </div>
-</div>
-<!-- Card 2 -->
-<div class="bg-surface rounded-xl p-8 ambient-shadow hover:-translate-y-1 transition-transform duration-300 flex flex-col h-full border border-outline-variant/30 relative overflow-hidden">
-<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10"></div>
-<div class="flex justify-between items-start mb-6 z-10">
-<h3 class="font-headline-md text-headline-md text-primary">Flat White</h3>
-<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">€4.20</span>
-</div>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow z-10">Double ristretto topped with silky, perfectly textured micro-foam milk. Balancing the acidity with natural sweetness.</p>
-<div class="flex gap-2 z-10">
-<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Caramel</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Blend</span>
-</div>
-</div>
-<!-- Card 3 -->
-<div class="bg-surface rounded-xl p-8 ambient-shadow hover:-translate-y-1 transition-transform duration-300 flex flex-col h-full border border-outline-variant/30">
-<div class="flex justify-between items-start mb-6">
-<h3 class="font-headline-md text-headline-md text-primary">Filter</h3>
-<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">€5.00</span>
-</div>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">Hand-poured V60. A delicate, tea-like extraction highlighting the nuanced notes of our light roasts.</p>
-<div class="flex gap-2">
-<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Jasmine</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Light Roast</span>
-</div>
-</div>
-</div>
-<div class="mt-12 text-center">
-<a class="inline-block px-8 py-4 bg-transparent border border-primary text-primary font-label-md text-label-md rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300 tracking-wider uppercase" href="#">View Full Menu</a>
-</div>
+<div id="contestContent"></div>
 </div>
 </section>
 <!-- Image Break Section -->
@@ -326,12 +293,12 @@
 </section>
 </main>
 <!-- Footer JSON Component -->
-<footer class="w-full border-t border-tertiary/10 flat no shadows flex flex-col items-center gap-unit py-12 px-margin-mobile text-center bg-surface-container-low dark:bg-surface-container-highest mt-section-gap">
+<footer id="footer" class="w-full border-t border-tertiary/10 flat no shadows flex flex-col items-center gap-unit py-12 px-margin-mobile text-center bg-surface-container-low dark:bg-surface-container-highest mt-section-gap">
 <h4 class="font-label-md text-label-md uppercase tracking-widest text-primary mb-4">Свет.</h4>
 <div class="flex gap-6 mb-6">
-<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Instagram</a>
-<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Telegram</a>
-<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Email</a>
+<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Инстаграм</a>
+<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Телеграм</a>
+<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Почта</a>
 </div>
 <p class="font-label-sm text-label-sm text-secondary dark:text-secondary-fixed">© 2026 Свет. Coffee Rituals.</p>
 </footer>
@@ -411,4 +378,5 @@
             }
         });
     </script>
+<script defer src="assets/menu.js?v=1"></script>
 </body></html>
