@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Свет. Coffee Rituals</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+          font-family: 'Material Symbols Outlined';
+          font-weight: normal;
+          font-style: normal;
+          font-size: 24px;
+          line-height: 1;
+          letter-spacing: normal;
+          text-transform: none;
+          display: inline-block;
+          white-space: nowrap;
+          word-wrap: normal;
+          direction: ltr;
+          -webkit-font-feature-settings: 'liga';
+          -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e7e1de",
+                        "inverse-on-surface": "#f6f0ec",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#1d1b19",
+                        "background": "#fef8f4",
+                        "on-surface-variant": "#4d4540",
+                        "surface-container-high": "#ede7e3",
+                        "primary-fixed-dim": "#cec5c0",
+                        "secondary": "#5e5e5b",
+                        "tertiary-fixed-dim": "#cac6bf",
+                        "on-tertiary-fixed-variant": "#484742",
+                        "surface-container-low": "#f8f2ef",
+                        "secondary-container": "#e1dfdb",
+                        "secondary-fixed-dim": "#c8c6c2",
+                        "surface-bright": "#fef8f4",
+                        "on-primary-container": "#968d89",
+                        "surface-tint": "#645d59",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#918f89",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#32302e",
+                        "on-background": "#1d1b19",
+                        "on-secondary-container": "#63635f",
+                        "tertiary": "#141410",
+                        "on-primary-fixed": "#1f1b18",
+                        "inverse-primary": "#cec5c0",
+                        "outline": "#7f7570",
+                        "surface-container": "#f3ede9",
+                        "primary-container": "#2c2724",
+                        "surface": "#fef8f4",
+                        "surface-dim": "#ded9d5",
+                        "on-secondary-fixed": "#1b1c19",
+                        "outline-variant": "#d0c4be",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#292824",
+                        "primary-fixed": "#ebe0dc",
+                        "tertiary-fixed": "#e6e2db",
+                        "surface-variant": "#e7e1de",
+                        "on-primary-fixed-variant": "#4c4642",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#474744",
+                        "secondary-fixed": "#e4e2dd",
+                        "on-tertiary-fixed": "#1c1c17",
+                        "primary": "#171310"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "section-gap": "120px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-mobile": "20px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["DM Sans"],
+                        "headline-lg-mobile": ["Libre Caslon Text"],
+                        "body-lg": ["DM Sans"],
+                        "headline-md": ["Libre Caslon Text"],
+                        "headline-xl": ["Libre Caslon Text"],
+                        "headline-lg": ["Libre Caslon Text"],
+                        "label-md": ["DM Sans"],
+                        "label-sm": ["DM Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "400" }],
+                        "headline-xl": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "1.2", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        html { scroll-behavior: smooth; }
+        
+        /* Enhanced hover effects */
+        .ambient-shadow { 
+            box-shadow: 0 10px 30px -10px rgba(44, 39, 36, 0.05); 
+            transition: box-shadow 0.4s ease, transform 0.4s ease; 
+        }
+        .ambient-shadow:hover { 
+            box-shadow: 0 20px 40px -12px rgba(44, 39, 36, 0.15); 
+        }
+        
+        /* Smooth scroll reveal */
+        .fade-in { 
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            will-change: opacity, transform;
+        }
+        .fade-in.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        
+        /* Hero Animations */
+        @keyframes slowZoom {
+            0% { transform: scale(1.05); }
+            100% { transform: scale(1.15); }
+        }
+        .animate-zoom { 
+            animation: slowZoom 25s ease-out forwards; 
+        }
+        
+        @keyframes fadeInSlideUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .hero-text-animate { 
+            opacity: 0; 
+            animation: fadeInSlideUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
+            animation-delay: 0.6s; 
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar JSON Component -->
+<header class="fixed top-0 w-full z-50 no-border bg-transparent flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 transition-all duration-300" id="topAppBar">
+<button aria-label="Menu" class="text-primary dark:text-inverse-primary hover:opacity-70 transition-opacity scale-95 duration-200" id="menuButton">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<a class="font-headline-md text-headline-md tracking-widest text-primary dark:text-inverse-primary" href="#">Свет.</a>
+<div class="w-6 hidden md:block"></div> <!-- Spacer for centering -->
+</header>
+<!-- NavigationDrawer JSON Component (Hidden by default) -->
+<div class="fixed inset-y-0 left-0 z-[60] flex flex-col p-6 h-full w-4/5 md:w-1/3 rounded-r-none bg-surface dark:bg-inverse-surface shadow-2xl bg-surface-container-low transition-transform duration-300 ease-in-out -translate-x-full" id="navDrawer">
+<div class="flex justify-between items-center mb-12">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Свет.</h2>
+<button class="text-on-surface-variant hover:text-primary transition-colors" id="closeMenuButton">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<nav class="flex flex-col gap-4">
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#our-story">
+<span class="material-symbols-outlined">history_edu</span>
+                Our Story
+            </a>
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#menu">
+<span class="material-symbols-outlined">local_cafe</span>
+                The Coffee
+            </a>
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#">
+<span class="material-symbols-outlined">map</span>
+                Locations
+            </a>
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#">
+<span class="material-symbols-outlined">mail</span>
+                Subscription
+            </a>
+<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#contact">
+<span class="material-symbols-outlined">call</span>
+                Contact
+            </a>
+</nav>
+</div>
+<div class="fixed inset-0 bg-scrim/20 z-[55] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm" id="drawerOverlay"></div>
+<main>
+<!-- Hero Section -->
+<section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 z-0" id="heroParallax">
+<img alt="" class="w-full h-full object-cover object-center animate-zoom" id="heroImage" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM74bNFkiq2VSWZ5uQxQE6W99Fom7f8nf3Z00fBCqj1qhZ--agXCo_Wn63XwIrb3sXzIyxFYsa8QnfLnxw3AgTpS2XeE2BGKXklXcNKkB6_jPAh1CoXMYWvcj7ExQj_ainlugHUhXliUy3-XhErviZP03Kd6FgR5q_HY49QQ3GR0ZZRJ_IQS517CudVK6Av0zxpKUqxUVZNOGss0f4Dy4T-ti2lDj7OlUwogFLDS3tr8e-tDS_r53J"/>
+<div class="absolute inset-0 bg-surface/30"></div> <!-- Subtle overlay for text readability -->
+</div>
+<div class="relative z-10 flex flex-col items-center text-center px-margin-mobile hero-text-animate mt-20">
+<h1 class="font-headline-xl text-headline-xl text-primary mb-4 tracking-tight">Свет.</h1>
+<p class="font-body-lg text-body-lg text-primary-container max-w-md mx-auto">Кофейные ритуалы</p>
+</div>
+<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+<span class="material-symbols-outlined text-primary">arrow_downward</span>
+</div>
+</section>
+<!-- Our Story Section -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto" id="our-story">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5 md:col-start-2">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-8 fade-in">Quiet Mornings.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-6 leading-relaxed fade-in delay-100">
+                        Свет (Light) was born from the desire to create a sanctuary. A place where the ritual of coffee is respected, unhurried, and precise. We believe in high-end minimalism, focusing only on what matters: the bean, the water, and the quiet moment before the day begins.
+                    </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed fade-in delay-200">
+                        Sourced from single estates, roasted light to preserve origin character, and brewed with intention. Our spaces are designed to reflect the clarity we seek in our cups—luminous, calm, and grounded.
+                    </p>
+<a class="inline-flex items-center gap-2 font-label-md text-label-md text-primary border-b border-primary pb-1 hover:opacity-70 transition-opacity fade-in delay-300" href="#">
+                        Read full story <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<div class="md:col-span-4 md:col-start-8 mt-12 md:mt-0 relative fade-in delay-200">
+<div class="aspect-[3/4] rounded-lg overflow-hidden relative ambient-shadow bg-tertiary-fixed-dim">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" data-alt="A minimalist pour-over coffee setup on a light oak wooden counter bathed in soft morning sunlight. The scene features a matte ceramic dripper, a glass carafe, and delicate shadows creating a calm, high-end, and luminous aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJYPBx3pLEAtOokQxYNxslEnSV0yR1yvNCQDGHxh45Q9-xxVKbxcVLrxQEWYsAvx1RgusQekxrQ_YrtEePdcUFGbIdWtHg2US5W53qBSxyP7g8HZEL_EaBgI9UlQxlcf_QDBV3R7GPAirtQk73oFa86qhfg_3VBxHtjeYaGoWDUMd4P8-65sAz1s37lMdh4VwYDgOqQBb9CxklSQzWfHJHbRIYb055p4o34VNMu2ZOFIiDl3pyGHcM"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Menu Section (Bento Grid Style) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-low" id="menu">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16 fade-in">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">The Ritual.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Simple, precise, luminous.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface rounded-xl p-8 ambient-shadow hover:-translate-y-2 transition-all duration-400 flex flex-col h-full border border-outline-variant/30 fade-in delay-100">
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-headline-md text-headline-md text-primary">Espresso</h3>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">€3.50</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">A concentrated shot of our seasonal single-origin. Bright, syrupy, and intensely aromatic. Served with sparkling water.</p>
+<div class="flex gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Floral</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Washed</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface rounded-xl p-8 ambient-shadow hover:-translate-y-2 transition-all duration-400 flex flex-col h-full border border-outline-variant/30 relative overflow-hidden fade-in delay-200">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10 transition-transform duration-500 group-hover:scale-110"></div>
+<div class="flex justify-between items-start mb-6 z-10">
+<h3 class="font-headline-md text-headline-md text-primary">Flat White</h3>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">€4.20</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow z-10">Double ristretto topped with silky, perfectly textured micro-foam milk. Balancing the acidity with natural sweetness.</p>
+<div class="flex gap-2 z-10">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Caramel</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Blend</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface rounded-xl p-8 ambient-shadow hover:-translate-y-2 transition-all duration-400 flex flex-col h-full border border-outline-variant/30 fade-in delay-300">
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-headline-md text-headline-md text-primary">Filter</h3>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full">€5.00</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex-grow">Hand-poured V60. A delicate, tea-like extraction highlighting the nuanced notes of our light roasts.</p>
+<div class="flex gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Jasmine</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-tertiary/5 px-2 py-1 rounded-full">Light Roast</span>
+</div>
+</div>
+</div>
+<div class="mt-12 text-center fade-in delay-300">
+<a class="inline-block px-8 py-4 bg-transparent border border-primary text-primary font-label-md text-label-md rounded-full hover:bg-primary hover:text-on-primary hover:scale-105 hover:shadow-lg transition-all duration-300 tracking-wider uppercase" href="#">View Full Menu</a>
+</div>
+</div>
+</section>
+<!-- Image Break Section -->
+<section class="h-[60vh] w-full relative overflow-hidden fade-in">
+<img class="w-full h-full object-cover hover:scale-105 transition-transform duration-1000" data-alt="A close-up shot of a ceramic cup of coffee resting on a light stone table with dappled sunlight streaming across it. The lighting is soft and warm, conveying a sense of early morning tranquility in a minimalist cafe environment. High-end, clean aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCncYQEoMrTDX0s4PINLCnXuA182jFDcGhK7CMiDtyaL9WQ6ge35cCPS4nu0-tFOudWbCI9iF04hYz-c7Rs1vTiLya0B0SEhieWrCcK7PW_aol3HRGmZDsNtGdwp2-G0MKuEvz5I9St2bm2O6xykd0A1CcguEjpAEfLaEK-udXVB_oHNp4VQ6USD4_0XRoCXaNnzK4GwITCbvc84n-njkpU_dEMj8B3eAh8p9g4bRVjs4xQrUPtkz4y"/>
+</section>
+<!-- Order Form Section -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-3xl mx-auto" id="contact">
+<div class="text-center mb-12 fade-in">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Bring Light Home.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Order beans or merchandise for local delivery.</p>
+</div>
+<form class="space-y-8">
+<div class="relative fade-in delay-100">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2" for="name">Name</label>
+<input class="w-full bg-transparent border-0 border-b border-tertiary/20 px-0 py-2 font-body-md text-primary focus:ring-0 focus:border-primary transition-colors placeholder:text-outline-variant" id="name" name="name" placeholder="Jane Doe" type="text"/>
+</div>
+<div class="relative fade-in delay-200">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2" for="phone">Phone</label>
+<input class="w-full bg-transparent border-0 border-b border-tertiary/20 px-0 py-2 font-body-md text-primary focus:ring-0 focus:border-primary transition-colors placeholder:text-outline-variant" id="phone" name="phone" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="relative fade-in delay-300">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2" for="address">Delivery Address</label>
+<textarea class="w-full bg-transparent border-0 border-b border-tertiary/20 px-0 py-2 font-body-md text-primary focus:ring-0 focus:border-primary transition-colors resize-none placeholder:text-outline-variant" id="address" name="address" placeholder="123 Minimalist Way, Suite 4" rows="3"></textarea>
+</div>
+<div class="pt-6 fade-in delay-300">
+<button class="w-full md:w-auto px-10 py-4 bg-primary text-on-primary font-label-md text-label-md rounded-full hover:bg-primary/90 hover:scale-[1.02] hover:shadow-xl transition-all duration-300 tracking-wider uppercase ambient-shadow" type="submit">Request Order</button>
+</div>
+</form>
+</section>
+</main>
+<!-- Footer JSON Component -->
+<footer class="w-full border-t border-tertiary/10 flat no shadows flex flex-col items-center gap-unit py-12 px-margin-mobile text-center bg-surface-container-low dark:bg-surface-container-highest mt-section-gap fade-in">
+<h4 class="font-label-md text-label-md uppercase tracking-widest text-primary mb-4">Свет.</h4>
+<div class="flex gap-6 mb-6">
+<a class="text-secondary font-label-sm text-label-sm hover:text-primary hover:-translate-y-1 transition-all opacity-80 hover:opacity-100" href="#">Instagram</a>
+<a class="text-secondary font-label-sm text-label-sm hover:text-primary hover:-translate-y-1 transition-all opacity-80 hover:opacity-100" href="#">Telegram</a>
+<a class="text-secondary font-label-sm text-label-sm hover:text-primary hover:-translate-y-1 transition-all opacity-80 hover:opacity-100" href="#">Email</a>
+</div>
+<p class="font-label-sm text-label-sm text-secondary dark:text-secondary-fixed">© 2024 Свет. Coffee Rituals.</p>
+</footer>
+<script>
+        // Scroll Reveal Logic using IntersectionObserver
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach((element) => {
+            observer.observe(element);
+        });
+
+        // App Bar Scroll Effect
+        const topAppBar = document.getElementById('topAppBar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                topAppBar.classList.add('bg-surface/90', 'backdrop-blur-md', 'shadow-sm');
+                topAppBar.classList.remove('bg-transparent');
+            } else {
+                topAppBar.classList.remove('bg-surface/90', 'backdrop-blur-md', 'shadow-sm');
+                topAppBar.classList.add('bg-transparent');
+            }
+        });
+
+        // Navigation Drawer Logic
+        const menuButton = document.getElementById('menuButton');
+        const closeMenuButton = document.getElementById('closeMenuButton');
+        const navDrawer = document.getElementById('navDrawer');
+        const drawerOverlay = document.getElementById('drawerOverlay');
+
+        function openMenu() {
+            navDrawer.classList.remove('-translate-x-full');
+            drawerOverlay.classList.remove('hidden');
+            // small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                drawerOverlay.classList.remove('opacity-0');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeMenu() {
+            navDrawer.classList.add('-translate-x-full');
+            drawerOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                drawerOverlay.classList.add('hidden');
+            }, 300); // match transition duration
+            document.body.style.overflow = '';
+        }
+
+        menuButton.addEventListener('click', openMenu);
+        closeMenuButton.addEventListener('click', closeMenu);
+        drawerOverlay.addEventListener('click', closeMenu);
+        
+        // Close menu on link click
+        navDrawer.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Parallax effect for hero background
+        const heroParallax = document.getElementById('heroParallax');
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY;
+            if(scrollPos < window.innerHeight) {
+                heroParallax.style.transform = `translateY(${scrollPos * 0.4}px)`;
+            }
+        });
+    </script>
+</body></html>
