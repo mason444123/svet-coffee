@@ -325,6 +325,10 @@
         document.querySelectorAll('.fade-in').forEach((element) => {
             observer.observe(element);
         });
+        // Never leave content invisible if a mobile browser delays IntersectionObserver during a fast scroll.
+        window.setTimeout(() => {
+            document.querySelectorAll('.fade-in:not(.visible)').forEach((element) => element.classList.add('visible'));
+        }, 900);
 
         // App Bar Scroll Effect
         const topAppBar = document.getElementById('topAppBar');
