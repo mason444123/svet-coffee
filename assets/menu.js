@@ -394,29 +394,10 @@
   }
 
   function createShopShell(filters, catalog, extras) {
-    var menu = document.getElementById('menu');
-    var inner = menu.querySelector('.max-w-container-max');
-    var launcher = el('div', 'mt-10 rounded-2xl border border-outline-variant/40 bg-surface px-6 py-7 md:px-10 md:py-9 ambient-shadow flex flex-col md:flex-row md:items-center justify-between gap-6');
-    var copy = el('div', '');
-    copy.appendChild(el('p', 'font-label-sm text-label-sm text-secondary uppercase tracking-[0.18em] mb-2', '79 позиций · собирайте свой заказ'));
-    copy.appendChild(el('p', 'font-body-lg text-body-lg text-on-surface-variant', 'Каталог открывается в отдельном спокойном пространстве — без длинной ленты.'));
-    var open = createButton('Открыть меню', 'h-12 px-7 rounded-full bg-primary text-on-primary font-label-md text-label-md tracking-wide whitespace-nowrap transition-transform hover:scale-[1.02] active:scale-[0.98]');
-    launcher.appendChild(copy); launcher.appendChild(open);
-    inner.appendChild(launcher);
-
-    var overlay = el('div', 'fixed inset-0 z-[80] hidden opacity-0 bg-scrim/50 backdrop-blur-sm p-0 md:p-8');
-    overlay.style.transition = 'opacity ' + SHEET_MS + 'ms ' + MOTION_EASE;
-    overlay.style.willChange = 'opacity';
-    overlay.setAttribute('role', 'dialog'); overlay.setAttribute('aria-modal', 'true'); overlay.setAttribute('aria-label', 'Меню кофейни');
-    var panel = el('div', 'absolute inset-x-0 bottom-0 max-h-[92svh] overflow-hidden rounded-t-3xl bg-surface shadow-2xl translate-y-full md:relative md:inset-auto md:mx-auto md:max-w-6xl md:max-h-full md:h-full md:rounded-3xl');
-    panel.style.transition = 'transform ' + SHEET_MS + 'ms ' + MOTION_EASE;
-    panel.style.willChange = 'transform';
-    var top = el('div', 'flex items-center justify-between gap-4 px-5 py-5 md:px-8 border-b border-outline-variant/35');
-    var title = el('div', ''); title.appendChild(el('p', 'font-label-sm text-label-sm text-secondary uppercase tracking-[0.18em]', 'Свет. кофейня')); title.appendChild(el('h2', 'font-headline-md text-headline-md text-primary', 'Выберите позиции'));
-    var close = createButton('close', 'material-symbols-outlined w-11 h-11 rounded-full bg-surface-container-high text-primary grid place-items-center'); close.setAttribute('aria-label', 'Закрыть меню'); top.appendChild(title); top.appendChild(close); panel.appendChild(top);
-    var content = el('div', 'overflow-y-auto max-h-[calc(92svh-84px)] p-5 pb-32 md:p-8 md:pb-32');
-    filters.className = 'flex overflow-x-auto whitespace-nowrap md:flex-wrap md:whitespace-normal md:overflow-visible gap-2 mb-7 pb-2';
-    content.appendChild(filters); content.appendChild(catalog); content.appendChild(extras); panel.appendChild(content); overlay.appendChild(panel); document.body.appendChild(overlay);
+    // The carousel lives directly in the page section — there is no menu launcher or modal.
+    filters.className = 'w-full mb-10';
+    catalog.className = 'mt-8';
+    extras.className = 'mt-12';
 
     var cartButton = createButton('', 'fixed z-[81] bottom-5 right-5 h-14 px-5 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-xl hidden items-center gap-2');
     cartButton.setAttribute('aria-label', 'Открыть корзину'); document.body.appendChild(cartButton);
@@ -436,15 +417,10 @@
       }
     }
 
-    function setOverlay(opened) {
-      if (opened) { overlay.classList.remove('hidden'); requestAnimationFrame(function () { overlay.classList.remove('opacity-0'); panel.classList.remove('translate-y-full'); if (filters._centerCarousel) filters._centerCarousel(); }); document.body.style.overflow = 'hidden'; close.focus(); }
-      else { overlay.classList.add('opacity-0'); panel.classList.add('translate-y-full'); setCartPanel(false); document.body.style.overflow = ''; setTimeout(function () { overlay.classList.add('hidden'); }, SHEET_MS); }
-    }
-    open.addEventListener('click', function () { setOverlay(true); }); close.addEventListener('click', function () { setOverlay(false); });
-    overlay.addEventListener('click', function (event) { if (event.target === overlay) setOverlay(false); });
-    document.addEventListener('keydown', function (event) { if (event.key === 'Escape') { setOverlay(false); setCartPanel(false); } });
+    // Escape affects only the floating cart now; the menu itself stays in the document.
+    document.addEventListener('keydown', function (event) { if (event.key === 'Escape') setCartPanel(false); });
     cartButton.addEventListener('click', function () { setCartPanel(cartPanel.classList.contains('hidden')); renderCart(); });
-    shop = { overlay: overlay, panel: panel, cartButton: cartButton, cartPanel: cartPanel, setOverlay: setOverlay, setCartPanel: setCartPanel };
+    shop = { cartButton: cartButton, cartPanel: cartPanel, setCartPanel: setCartPanel };
   }
 
   function renderCart() {
