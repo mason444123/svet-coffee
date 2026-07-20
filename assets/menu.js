@@ -299,13 +299,14 @@
     shell.style.width = '100%';
     var rail = el('div', 'flex gap-4 overflow-x-auto py-3');
     rail.setAttribute('aria-label', 'Все категории меню');
-    rail.style.cssText += 'scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-inline:calc(50% - 118px);-webkit-overflow-scrolling:touch;scrollbar-width:none;';
+    rail.style.cssText += 'scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-inline:0;-webkit-overflow-scrolling:touch;scrollbar-width:none;';
     var cards = [];
+    function syncRailInsets() { var card = cards[0]; if (!card) return; var inset = Math.max(0, (rail.clientWidth - card.offsetWidth) / 2); rail.style.paddingLeft = inset + 'px'; rail.style.paddingRight = inset + 'px'; }
     function centerActive(behavior) { var card = cards[active]; if (card) rail.scrollTo({ left: card.offsetLeft - (rail.clientWidth - card.offsetWidth) / 2, behavior: behavior || (reducedMotion() ? 'auto' : 'smooth') }); }
-    filtersEl._centerCarousel = function () { centerActive('auto'); };
+    filtersEl._centerCarousel = function () { syncRailInsets(); centerActive('auto'); };
     function select(index, focus) {
       active = (index + groups.length) % groups.length;
-      cards.forEach(function (card, i) { var on = i === active; card.setAttribute('aria-pressed', on ? 'true' : 'false'); card.style.opacity = on ? '1' : '.68'; card.style.transform = on ? 'scale(1)' : 'scale(.88)'; card.style.boxShadow = on ? '0 22px 44px -20px rgba(42,32,24,.42)' : '0 12px 28px -20px rgba(42,32,24,.34)'; });
+      cards.forEach(function (card, i) { var on = i === active; card.setAttribute('aria-pressed', on ? 'true' : 'false'); card.style.opacity = '1'; card.style.transform = 'none'; card.style.boxShadow = '0 14px 30px -18px rgba(42,32,24,.38)'; card.style.outline = on ? '2px solid rgba(42,32,24,.34)' : '1px solid rgba(42,32,24,.12)'; card.style.outlineOffset = on ? '2px' : '0'; });
       centerActive();
       clear(catalogEl);
     }
@@ -324,7 +325,7 @@
     var next = createButton('chevron_right', 'material-symbols-outlined absolute right-1 top-1/2 -translate-y-1/2 z-10 hidden md:grid place-items-center w-11 h-11 rounded-full bg-surface text-primary shadow-lg');
     previous.setAttribute('aria-label', 'Предыдущая категория'); next.setAttribute('aria-label', 'Следующая категория'); previous.addEventListener('click', function () { select(active - 1, true); }); next.addEventListener('click', function () { select(active + 1, true); });
     rail.addEventListener('keydown', function (event) { if (event.key === 'ArrowLeft') { event.preventDefault(); select(active - 1, true); } if (event.key === 'ArrowRight') { event.preventDefault(); select(active + 1, true); } }); rail.tabIndex = 0;
-    shell.appendChild(rail); shell.appendChild(previous); shell.appendChild(next); filtersEl.appendChild(shell); select(0, false);
+    shell.appendChild(rail); shell.appendChild(previous); shell.appendChild(next); filtersEl.appendChild(shell); requestAnimationFrame(function () { syncRailInsets(); select(0, false); });
   }
 
   function renderCatalog(categories, catalogEl) {
