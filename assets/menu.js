@@ -102,7 +102,7 @@
     appendBadges(badges, item);
     if (badges.childNodes.length) card.appendChild(badges);
 
-    const add = el('button', 'mt-5 w-full h-11 rounded-full bg-primary text-on-primary font-label-md text-label-md tracking-wide transition-transform hover:scale-[1.01] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2', 'В корзину');
+    const add = el('button', 'mt-5 self-start h-9 px-4 rounded-lg bg-surface-container-high text-on-surface-variant border border-outline-variant/55 font-label-sm text-label-sm tracking-wide transition-colors hover:bg-surface-container-highest hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2', 'В корзину');
     add.type = 'button';
     add.addEventListener('click', function () {
       addToCart(item);
@@ -249,11 +249,11 @@
 
   function menuGroups(categories) {
     var sets = [
-      { id: 'coffee', title: 'Кофе', eyebrow: 'Эспрессо · авторский · холодный', icon: 'local_cafe', ids: ['coffee-classics','signature-coffee','cold-coffee','summer-coffee'] },
-      { id: 'drinks', title: 'Напитки', eyebrow: 'Чай · лимонады · bubble tea', icon: 'local_drink', ids: ['bubble-tea','not-coffee','lemonades','cold-drinks','tea','summer-lemonades'] },
-      { id: 'food', title: 'Еда', eyebrow: 'Завтраки · вафли · сэндвичи', icon: 'restaurant', ids: ['savory-waffles','pizza-snacks','salads','breakfasts'] },
-      { id: 'sweet', title: 'Сладкое', eyebrow: 'Вафли и десерты', icon: 'cake', ids: ['sweet-waffles'] },
-      { id: 'seasonal', title: 'Сезонное', eyebrow: 'Лето в городе', icon: 'wb_sunny', ids: ['summer-coffee','summer-lemonades'] }
+      { id: 'coffee', title: 'Кофе', eyebrow: 'Эспрессо · авторский · холодный', image: 'assets/menu-coffee.png', ids: ['coffee-classics','signature-coffee','cold-coffee','summer-coffee'] },
+      { id: 'drinks', title: 'Лимонады', eyebrow: 'Чай · лимонады · bubble tea', image: 'assets/menu-lemonade.png', ids: ['bubble-tea','not-coffee','lemonades','cold-drinks','tea','summer-lemonades'] },
+      { id: 'food', title: 'Еда', eyebrow: 'Завтраки · вафли · сэндвичи', image: 'assets/menu-food.png', ids: ['savory-waffles','pizza-snacks','salads','breakfasts'] },
+      { id: 'sweet', title: 'Сладкое', eyebrow: 'Вафли и десерты', image: 'assets/menu-dessert.png', ids: ['sweet-waffles'] },
+      { id: 'seasonal', title: 'Сезонное', eyebrow: 'Лето в городе', image: 'assets/menu-seasonal.png', ids: ['summer-coffee','summer-lemonades'] }
     ];
     return sets.map(function (group) { group.categories = categories.filter(function (cat) { return group.ids.indexOf(cat.id) !== -1; }); return group; }).filter(function (group) { return group.categories.length; });
   }
@@ -305,7 +305,7 @@
     filtersEl._centerCarousel = function () { centerActive('auto'); };
     function select(index, focus) {
       active = (index + groups.length) % groups.length;
-      cards.forEach(function (card, i) { var on = i === active; card.setAttribute('aria-pressed', on ? 'true' : 'false'); card.style.opacity = on ? '1' : '.52'; card.style.transform = on ? 'scale(1)' : 'scale(.88)'; card.style.boxShadow = on ? '0 24px 55px -24px rgba(23,19,16,.38)' : 'none'; });
+      cards.forEach(function (card, i) { var on = i === active; card.setAttribute('aria-pressed', on ? 'true' : 'false'); card.style.opacity = on ? '1' : '.68'; card.style.transform = on ? 'scale(1)' : 'scale(.88)'; card.style.boxShadow = on ? '0 22px 44px -20px rgba(42,32,24,.42)' : '0 12px 28px -20px rgba(42,32,24,.34)'; });
       centerActive();
       clear(catalogEl);
     }
@@ -314,7 +314,10 @@
       var tones = ['#e8ddd1', '#dce5df', '#ead6cf', '#ece2c9', '#dcd4e6'];
       card.style.cssText = 'display:grid;place-items:center;flex:0 0 auto;width:min(74vw,360px);height:min(74vw,360px);background:'+tones[i]+';color:#1b1613;border-radius:2px;border:1px solid rgba(35,27,23,.10);scroll-snap-align:center;transition:transform 420ms '+MOTION_EASE+',opacity 420ms '+MOTION_EASE+',box-shadow 420ms '+MOTION_EASE+';';
       card.setAttribute('aria-label', 'Открыть категорию ' + group.title); card.setAttribute('aria-pressed', 'false');
-      var label = el('span', 'font-headline-lg text-headline-lg text-center px-5', group.title); card.appendChild(label);
+      var image = document.createElement('img'); image.src = group.image; image.alt = ''; image.loading = 'lazy'; image.className = 'absolute inset-0 w-full h-full object-cover'; image.style.transform = 'scale(1.02)'; card.appendChild(image);
+      var titleLayer = el('span', 'absolute inset-x-0 top-0 h-[34%] flex items-center justify-center px-5 text-center');
+      titleLayer.style.cssText = 'background:rgba(250,247,242,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.42);';
+      titleLayer.appendChild(el('span', 'font-headline-md text-headline-md tracking-wide', group.title.toUpperCase())); card.appendChild(titleLayer);
       card.addEventListener('click', function () { select(i, true); openCategoryMenu(group); }); cards.push(card); rail.appendChild(card);
     });
     var previous = createButton('chevron_left', 'material-symbols-outlined absolute left-1 top-1/2 -translate-y-1/2 z-10 hidden md:grid place-items-center w-11 h-11 rounded-full bg-surface text-primary shadow-lg');
