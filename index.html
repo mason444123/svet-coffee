@@ -8,10 +8,10 @@
   <title>Свет. — кофе и тихие завтраки</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/hero-cafe-v2.webp" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="assets/styles.css?v=8.2-20260721">
+  <link rel="stylesheet" href="assets/styles.css?v=9">
   <script>document.documentElement.classList.add('js', 'intro-pending');</script>
-  <script src="assets/config.js?v=8.2-20260721"></script>
-  <script defer src="assets/app.js?v=8.2-20260721"></script>
+  <script src="assets/config.js?v=9"></script>
+  <script defer src="assets/app.js?v=9"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">К содержанию</a>
@@ -58,9 +58,45 @@
       </div>
     </section>
 
+    <section class="menu-section section" id="menu" aria-labelledby="menuTitle">
+      <div class="page-shell menu-section__heading">
+        <div>
+          <div class="section-number reveal" aria-hidden="true">01 / Меню</div>
+          <h2 id="menuTitle" class="display reveal">Меню.</h2>
+        </div>
+        <div class="menu-section__aside reveal">
+          <p>Листайте карточки вбок: пальцем или удерживая курсор. Нажмите на понравившуюся, чтобы открыть категорию.</p>
+          <div class="rail-progress" aria-hidden="true"><span data-rail-progress></span></div>
+        </div>
+      </div>
+
+      <div class="menu-rail-wrap">
+        <p class="menu-status" data-menu-status aria-live="polite">Готовим меню…</p>
+        <div class="menu-rail" data-menu-rail aria-label="Категории меню" tabindex="0"></div>
+      </div>
+    </section>
+
+    <section class="season section" id="season" aria-labelledby="seasonTitle">
+      <div class="page-shell">
+        <div class="section-number reveal" aria-hidden="true">02 / Сейчас</div>
+        <article class="season-card media-reveal">
+          <img src="assets/contest-poster-v2.webp" alt="Постер конкурса «Три вкуса» с тремя сезонными напитками" width="1086" height="1448" loading="lazy" decoding="async">
+          <div class="season-card__shade" aria-hidden="true"></div>
+          <div class="season-card__content reveal">
+            <p class="eyebrow">Свет. × МАРТ Цветы</p>
+            <h2 id="seasonTitle">Три вкуса.<br><em>Одно лето.</em></h2>
+            <button class="glass-button glass-button--light" type="button" data-open-contest>
+              Открыть
+              <svg aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="story section" id="story" aria-labelledby="storyTitle">
       <div class="page-shell">
-        <div class="section-number reveal" aria-hidden="true">01 / О нас</div>
+        <div class="section-number reveal" aria-hidden="true">03 / О нас</div>
         <div class="story__intro">
           <h2 id="storyTitle" class="display reveal" data-split-lines>Здесь можно<br>не спешить.</h2>
           <div class="story__copy reveal">
@@ -78,45 +114,9 @@
             <p>Мягкий свет.<br>Честный кофе.<br>Ничего лишнего.</p>
           </div>
           <figure class="story__detail media-reveal" data-parallax="-0.05">
-            <img src="assets/coffee-break.webp" alt="Чашка кофе на светлом столе" width="512" height="279" loading="lazy" decoding="async">
+            <img src="assets/story-detail-real.webp" alt="Столик у окна в кофейне «Свет.»" width="1192" height="1800" loading="lazy" decoding="async">
           </figure>
         </div>
-      </div>
-    </section>
-
-    <section class="menu-section section" id="menu" aria-labelledby="menuTitle">
-      <div class="page-shell menu-section__heading">
-        <div>
-          <div class="section-number reveal" aria-hidden="true">02 / Меню</div>
-          <h2 id="menuTitle" class="display reveal">Меню.</h2>
-        </div>
-        <div class="menu-section__aside reveal">
-          <p>Листайте карточки вбок: пальцем или удерживая курсор. Нажмите на понравившуюся, чтобы открыть категорию.</p>
-          <div class="rail-progress" aria-hidden="true"><span data-rail-progress></span></div>
-        </div>
-      </div>
-
-      <div class="menu-rail-wrap">
-        <p class="menu-status" data-menu-status aria-live="polite">Готовим меню…</p>
-        <div class="menu-rail" data-menu-rail aria-label="Категории меню" tabindex="0"></div>
-      </div>
-    </section>
-
-    <section class="season section" id="season" aria-labelledby="seasonTitle">
-      <div class="page-shell">
-        <div class="section-number reveal" aria-hidden="true">03 / Сейчас</div>
-        <article class="season-card media-reveal">
-          <img src="assets/contest-poster-v2.webp" alt="Постер конкурса «Три вкуса» с тремя сезонными напитками" width="1086" height="1448" loading="lazy" decoding="async">
-          <div class="season-card__shade" aria-hidden="true"></div>
-          <div class="season-card__content reveal">
-            <p class="eyebrow">Свет. × МАРТ Цветы</p>
-            <h2 id="seasonTitle">Три вкуса.<br><em>Одно лето.</em></h2>
-            <button class="glass-button glass-button--light" type="button" data-open-contest>
-              Открыть
-              <svg aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
-            </button>
-          </div>
-        </article>
       </div>
     </section>
 
@@ -174,8 +174,9 @@
       <a class="footer__brand" href="#top">Свет.</a>
       <div class="footer__column">
         <p class="footer__label">Навигация</p>
-        <a href="#story">О кофейне</a>
         <a href="#menu">Меню</a>
+        <a href="#season">Сейчас</a>
+        <a href="#story">О кофейне</a>
         <a href="#order">Заказать</a>
       </div>
       <div class="footer__column">
@@ -220,9 +221,9 @@
       </button>
     </div>
     <nav class="nav-dialog__links" aria-label="Основная навигация">
-      <a href="#story"><span>01</span>О кофейне</a>
-      <a href="#menu"><span>02</span>Меню</a>
-      <a href="#season"><span>03</span>Сейчас</a>
+      <a href="#menu"><span>01</span>Меню</a>
+      <a href="#season"><span>02</span>Сейчас</a>
+      <a href="#story"><span>03</span>О кофейне</a>
       <a href="#order"><span>04</span>Заказать</a>
     </nav>
     <div class="nav-dialog__bottom">
