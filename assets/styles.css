@@ -577,7 +577,7 @@ svg {
   padding: 0;
   overflow: hidden;
   background: #b18a67;
-  cursor: pointer;
+  cursor: grab;
   opacity: 0;
   visibility: hidden;
   transform: scale(1.055);
@@ -585,6 +585,10 @@ svg {
   touch-action: pan-y;
   -webkit-user-drag: none;
   user-select: none;
+}
+
+.hero__slide:active {
+  cursor: grabbing;
 }
 
 .hero__slide.is-active {
@@ -599,6 +603,8 @@ svg {
   height: 100%;
   object-fit: cover;
   object-position: 50% 50%;
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 .hero__veil {

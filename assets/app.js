@@ -406,6 +406,8 @@
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       pointerStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
       pointerDragging = false;
+      // Prevent native image drag on desktop so pointermove keeps firing
+      if (event.pointerType === 'mouse') event.preventDefault();
       try { dom.heroSlider.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
     });
     dom.heroSlider.addEventListener('pointermove', function (event) {
