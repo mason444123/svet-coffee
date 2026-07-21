@@ -582,6 +582,9 @@ svg {
   visibility: hidden;
   transform: scale(1.055);
   transition: opacity 1.15s var(--ease-smooth), visibility 1.15s, transform 6.8s linear;
+  touch-action: pan-y;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .hero__slide.is-active {

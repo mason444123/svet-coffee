@@ -362,7 +362,9 @@
     var active = 0;
     var timer = 0;
     var pointerStart = null;
+    var pointerDragging = false;
     var suppressSlideClick = false;
+    var SWIPE_THRESHOLD = 42;
 
     function show(index, userInitiated) {
       active = (index + slides.length) % slides.length;
@@ -401,19 +403,39 @@
     });
 
     dom.heroSlider.addEventListener('pointerdown', function (event) {
-      pointerStart = { x: event.clientX, y: event.clientY };
-    }, { passive: true });
-    dom.heroSlider.addEventListener('pointerup', function (event) {
-      if (!pointerStart) return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      pointerStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+      pointerDragging = false;
+      try { dom.heroSlider.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
+    });
+    dom.heroSlider.addEventListener('pointermove', function (event) {
+      if (!pointerStart || event.pointerId !== pointerStart.id) return;
       var distanceX = event.clientX - pointerStart.x;
       var distanceY = event.clientY - pointerStart.y;
+      if (!pointerDragging && Math.abs(distanceX) > 8 && Math.abs(distanceX) > Math.abs(distanceY)) {
+        pointerDragging = true;
+        suppressSlideClick = true;
+      }
+      if (pointerDragging && event.cancelable) event.preventDefault();
+    });
+    function endSwipe(event) {
+      if (!pointerStart || (event && event.pointerId !== pointerStart.id)) return;
+      var distanceX = event ? event.clientX - pointerStart.x : 0;
+      var distanceY = event ? event.clientY - pointerStart.y : 0;
+      var wasDragging = pointerDragging;
       pointerStart = null;
-      if (Math.abs(distanceX) < 42 || Math.abs(distanceX) < Math.abs(distanceY)) return;
-      suppressSlideClick = true;
+      pointerDragging = false;
+      if (!wasDragging) return;
+      if (Math.abs(distanceX) < SWIPE_THRESHOLD || Math.abs(distanceX) < Math.abs(distanceY)) {
+        window.setTimeout(function () { suppressSlideClick = false; }, 80);
+        return;
+      }
       show(active + (distanceX < 0 ? 1 : -1), true);
-      window.setTimeout(function () { suppressSlideClick = false; }, 80);
-    }, { passive: true });
-    dom.heroSlider.addEventListener('pointercancel', function () { pointerStart = null; }, { passive: true });
+      window.setTimeout(function () { suppressSlideClick = false; }, 120);
+    }
+    dom.heroSlider.addEventListener('pointerup', endSwipe);
+    dom.heroSlider.addEventListener('pointercancel', function (event) { endSwipe(event); });
+    dom.heroSlider.addEventListener('lostpointercapture', function () { pointerStart = null; pointerDragging = false; });
     dom.heroSlider.addEventListener('click', function (event) {
       if (!suppressSlideClick) return;
       event.preventDefault();
