@@ -1,382 +1,374 @@
-<!DOCTYPE html>
-
-<html lang="ru"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Свет. Coffee Rituals</title>
-<meta content="Свет. — кофейные ритуалы, спешелти-кофе и спокойные утра." name="description"/>
-<link href="assets/favicon.svg?v=1" rel="icon" type="image/svg+xml"/>
-<script>document.documentElement.classList.add('js');</script>
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
-<!-- Material Symbols -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style>
-        @keyframes hero-arrival { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .hero-arrival { animation: hero-arrival 900ms cubic-bezier(.16, 1, .3, 1) both; }
-        @media (prefers-reduced-motion: reduce) { .hero-arrival { animation: none; } }
-        .material-symbols-outlined {
-          font-family: 'Material Symbols Outlined';
-          font-weight: normal;
-          font-style: normal;
-          font-size: 24px;
-          line-height: 1;
-          letter-spacing: normal;
-          text-transform: none;
-          display: inline-block;
-          white-space: nowrap;
-          word-wrap: normal;
-          direction: ltr;
-          -webkit-font-feature-settings: 'liga';
-          -webkit-font-smoothing: antialiased;
-        }
-    </style>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "error-container": "#ffdad6",
-                        "surface-container-highest": "#e7e1de",
-                        "inverse-on-surface": "#f6f0ec",
-                        "error": "#ba1a1a",
-                        "surface-container-lowest": "#ffffff",
-                        "on-primary": "#ffffff",
-                        "on-surface": "#1d1b19",
-                        "background": "#fef8f4",
-                        "on-surface-variant": "#4d4540",
-                        "surface-container-high": "#ede7e3",
-                        "primary-fixed-dim": "#cec5c0",
-                        "secondary": "#5e5e5b",
-                        "tertiary-fixed-dim": "#cac6bf",
-                        "on-tertiary-fixed-variant": "#484742",
-                        "surface-container-low": "#f8f2ef",
-                        "secondary-container": "#e1dfdb",
-                        "secondary-fixed-dim": "#c8c6c2",
-                        "surface-bright": "#fef8f4",
-                        "on-primary-container": "#968d89",
-                        "surface-tint": "#645d59",
-                        "on-error-container": "#93000a",
-                        "on-tertiary-container": "#918f89",
-                        "on-tertiary": "#ffffff",
-                        "inverse-surface": "#32302e",
-                        "on-background": "#1d1b19",
-                        "on-secondary-container": "#63635f",
-                        "tertiary": "#141410",
-                        "on-primary-fixed": "#1f1b18",
-                        "inverse-primary": "#cec5c0",
-                        "outline": "#7f7570",
-                        "surface-container": "#f3ede9",
-                        "primary-container": "#2c2724",
-                        "surface": "#fef8f4",
-                        "surface-dim": "#ded9d5",
-                        "on-secondary-fixed": "#1b1c19",
-                        "outline-variant": "#d0c4be",
-                        "on-error": "#ffffff",
-                        "tertiary-container": "#292824",
-                        "primary-fixed": "#ebe0dc",
-                        "tertiary-fixed": "#e6e2db",
-                        "surface-variant": "#e7e1de",
-                        "on-primary-fixed-variant": "#4c4642",
-                        "on-secondary": "#ffffff",
-                        "on-secondary-fixed-variant": "#474744",
-                        "secondary-fixed": "#e4e2dd",
-                        "on-tertiary-fixed": "#1c1c17",
-                        "primary": "#171310"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "margin-desktop": "64px",
-                        "section-gap": "120px",
-                        "container-max": "1280px",
-                        "gutter": "24px",
-                        "unit": "8px",
-                        "margin-mobile": "20px"
-                    },
-                    "fontFamily": {
-                        "body-md": ["DM Sans"],
-                        "headline-lg-mobile": ["Libre Caslon Text"],
-                        "body-lg": ["DM Sans"],
-                        "headline-md": ["Libre Caslon Text"],
-                        "headline-xl": ["Libre Caslon Text"],
-                        "headline-lg": ["Libre Caslon Text"],
-                        "label-md": ["DM Sans"],
-                        "label-sm": ["DM Sans"]
-                    },
-                    "fontSize": {
-                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
-                        "headline-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "400" }],
-                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
-                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "400" }],
-                        "headline-xl": ["64px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "400" }],
-                        "headline-lg": ["40px", { "lineHeight": "1.2", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700" }]
-                    }
-                }
-            }
-        }
-    </script>
-<style>
-        html { scroll-behavior: smooth; }
-        .ambient-shadow { box-shadow: 0 10px 30px -10px rgba(44, 39, 36, 0.05); }
-        .fade-in { opacity: 1; transform: none; }
-        .js .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-        .js .fade-in.visible { opacity: 1; transform: translateY(0); }
-        @media (prefers-reduced-motion: reduce) {
-          .js .fade-in { opacity: 1; transform: none; transition: none; }
-          html { scroll-behavior: auto; }
-        }
-    </style>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f2eee7">
+  <meta name="description" content="Свет. — кофе, тёплая еда и место, где можно не спешить.">
+  <title>Свет. — кофе и тихие завтраки</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/hero-cafe-v2.webp" as="image" fetchpriority="high">
+  <link rel="stylesheet" href="assets/styles.css?v=7">
+  <script>document.documentElement.classList.add('js', 'intro-pending');</script>
+  <script src="assets/config.js?v=7"></script>
+  <script defer src="assets/app.js?v=7"></script>
 </head>
-<body class="bg-surface text-on-surface font-body-md overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
-<!-- TopAppBar JSON Component -->
-<header class="fixed top-0 w-full z-50 no-border bg-transparent flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 transition-all duration-300" id="topAppBar">
-<button aria-label="Открыть меню" class="text-primary dark:text-inverse-primary hover:opacity-70 transition-opacity scale-95 duration-200" id="menuButton">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
-</button>
-<a class="font-headline-md text-headline-md tracking-widest text-primary dark:text-inverse-primary" href="#">Свет.</a>
-<div class="w-6 hidden md:block"></div> <!-- Spacer for centering -->
-</header>
-<!-- NavigationDrawer JSON Component (Hidden by default) -->
-<div class="fixed inset-y-0 left-0 z-[60] flex flex-col p-6 h-full w-4/5 md:w-1/3 rounded-r-none bg-surface dark:bg-inverse-surface shadow-2xl bg-surface-container-low transition-transform duration-300 ease-in-out -translate-x-full" id="navDrawer">
-<div class="flex justify-between items-center mb-12">
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Свет.</h2>
-<button class="text-on-surface-variant hover:text-primary transition-colors" id="closeMenuButton">
-<span class="material-symbols-outlined">close</span>
-</button>
-</div>
-<nav class="flex flex-col gap-4">
-<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#our-story">
-<span class="material-symbols-outlined">history_edu</span>
-                О кофейне
-            </a>
-<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#menu">
-<span class="material-symbols-outlined">local_cafe</span>
-                Меню
-            </a>
-<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#contest">
-<span class="material-symbols-outlined">map</span>
-                Конкурсная коллекция
-            </a>
-<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#contact">
-<span class="material-symbols-outlined">mail</span>
-                Доставка
-            </a>
-<a class="flex items-center gap-4 p-4 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-lg text-body-lg rounded-full" href="#footer">
-<span class="material-symbols-outlined">call</span>
-                Контакты
-            </a>
-</nav>
-</div>
-<div class="fixed inset-0 bg-scrim/20 z-[55] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm" id="drawerOverlay"></div>
-<main>
-<!-- Hero Section -->
-<section class="relative h-screen w-full flex items-center justify-center overflow-hidden">
-<div class="absolute inset-0 z-0">
-<img alt="Интерьер кофейни «Свет»" class="w-full h-full object-cover object-center scale-105" fetchpriority="high" id="heroImage" src="assets/hero.jpg?v=2"/>
-<div class="absolute inset-0 bg-surface/30"></div> <!-- Subtle overlay for text readability -->
-</div>
-<div class="relative z-10 flex flex-col items-center text-center px-margin-mobile mt-20 hero-arrival">
-<h1 class="font-headline-xl text-white text-[clamp(6rem,18vw,15rem)] leading-none tracking-[-0.07em]">Свет.</h1>
-</div>
-<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-<span class="material-symbols-outlined text-primary">arrow_downward</span>
-</div>
-</section>
-<!-- Раздел "О кофейне" -->
-<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto fade-in" id="our-story">
-<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
-<div class="md:col-span-5 md:col-start-2">
-<h2 class="font-headline-lg text-headline-lg text-primary mb-8">Тихие утра.</h2>
-<p class="font-body-lg text-body-lg text-on-surface-variant mb-6 leading-relaxed">
-                        Здесь спокойно. Мы готовим кофе и оставляем место для паузы — чтобы можно было налить чашку, выдохнуть и побыть в тишине перед началом дня.
-                    </p>
-<p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed">
-                        Светлое пространство, мягкий свет и неспешные ритуалы. Приходите, чтобы задержаться на пару минут или остаться подольше.
-                    </p>
-</div>
-<div class="md:col-span-4 md:col-start-8 mt-12 md:mt-0 relative">
-<div class="aspect-[3/4] rounded-lg overflow-hidden relative ambient-shadow bg-tertiary-fixed-dim">
-<img alt="Светлый стол у окна в кофейне" class="w-full h-full object-cover object-center" loading="lazy" src="assets/story.jpg?v=2"/>
-</div>
-</div>
-</div>
-</section>
-<!-- Menu Section (Bento Grid Style) -->
-<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-low fade-in" id="menu">
-<div class="max-w-container-max mx-auto">
-<div class="text-center mb-16">
-<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Меню</h2>
-<p class="font-body-md text-body-md text-on-surface-variant">Кофе, напитки, завтраки и еда.</p>
-</div>
-<p id="menuStatus" class="font-body-md text-body-md text-on-surface-variant text-center mb-8">Загружаем меню…</p>
-<nav id="menuCategoryFilters" aria-label="Категории меню" class="flex overflow-x-auto whitespace-nowrap md:flex-wrap md:whitespace-normal md:overflow-visible gap-2 mb-8 pb-2"></nav>
-<div id="menuCatalog" class="space-y-4"></div>
-<aside id="menuExtras" class="mt-12"></aside>
-</div>
-</section>
-<section class="py-section-gap px-margin-mobile md:px-margin-desktop fade-in" id="contest">
-<div class="max-w-container-max mx-auto">
-<div class="text-center mb-16">
-<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Конкурсная коллекция</h2>
-<p class="font-body-md text-body-md text-on-surface-variant">Свет. × МАРТ Цветы</p>
-</div>
-<div id="contestContent"></div>
-</div>
-</section>
-<!-- Image Break Section -->
-<section class="h-[60vh] min-h-[420px] w-full relative overflow-hidden bg-surface-container-high fade-in">
-<img alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover object-center scale-110 blur-xl opacity-55" loading="lazy" src="assets/coffee-interior-v2.webp?v=2"/>
-<img alt="Утренний интерьер кофейни с чашкой кофе" class="relative z-10 w-full h-full object-contain md:object-cover object-center" fetchpriority="low" src="assets/coffee-interior-v2.webp?v=2"/>
-</section>
-<!-- Delivery order form. Submission will be connected to the Telegram bot backend. -->
-<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-6xl mx-auto fade-in" id="contact">
-<div class="grid md:grid-cols-5 gap-12 md:gap-20 items-start">
-<div class="md:col-span-2 md:sticky md:top-32">
-<span class="inline-flex items-center gap-2 font-label-sm text-label-sm text-secondary uppercase tracking-[0.18em] mb-6">
-<span aria-hidden="true" class="material-symbols-outlined text-[17px]">local_shipping</span>
-                Доставка и самовывоз
-</span>
-<h2 class="font-headline-lg text-headline-lg text-primary mb-5">Заказ — в одном месте.</h2>
-<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">Добавьте позиции в корзину в меню. Там же откроется оформление с контактами и составом заказа.</p>
-<div class="mt-8 flex items-center gap-3 text-secondary">
-<span aria-hidden="true" class="w-8 h-px bg-outline"></span>
-<span class="font-label-sm text-label-sm uppercase tracking-widest">Детали заказа уточнит команда кофейни</span>
-</div>
-</div>
-<form class="md:col-span-3 bg-surface-container-low border border-outline-variant/40 rounded-2xl p-6 md:p-10 ambient-shadow" id="orderForm" novalidate>
-<div class="flex items-center justify-between gap-4 mb-8">
-<div>
-<p class="font-label-sm text-label-sm text-secondary uppercase tracking-[0.16em] mb-2">Заказ с доставкой</p>
-<h3 class="font-headline-md text-headline-md text-primary">Контактные данные</h3>
-</div>
-<span aria-label="Защищённая отправка через Telegram" class="material-symbols-outlined text-secondary text-[26px]" title="Данные будут отправляться через защищённый сервер">lock</span>
-</div>
-<div class="grid md:grid-cols-2 gap-6">
-<label class="block">
-<span class="block font-label-md text-label-md text-primary mb-2">Имя</span>
-<span class="relative block">
-<span aria-hidden="true" class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary text-[20px]">person</span>
-<input autocomplete="name" class="w-full h-14 rounded-xl border border-outline-variant bg-surface pl-12 pr-4 font-body-md text-body-md text-on-surface placeholder:text-secondary/65 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" id="customerName" minlength="2" name="name" placeholder="Ваше имя" required type="text"/>
-</span>
-</label>
-<label class="block">
-<span class="block font-label-md text-label-md text-primary mb-2">Телефон</span>
-<span class="relative block">
-<span aria-hidden="true" class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary text-[20px]">call</span>
-<input autocomplete="tel" class="w-full h-14 rounded-xl border border-outline-variant bg-surface pl-12 pr-4 font-body-md text-body-md text-on-surface placeholder:text-secondary/65 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10" id="customerPhone" inputmode="tel" name="phone" placeholder="+7 900 000-00-00" required type="tel"/>
-</span>
-</label>
-<label class="block md:col-span-2">
-<span class="block font-label-md text-label-md text-primary mb-2">Адрес доставки</span>
-<span class="relative block">
-<span aria-hidden="true" class="material-symbols-outlined absolute left-4 top-4 text-secondary text-[20px]">location_on</span>
-<textarea autocomplete="street-address" class="w-full min-h-28 rounded-xl border border-outline-variant bg-surface pl-12 pr-4 py-4 font-body-md text-body-md text-on-surface placeholder:text-secondary/65 outline-none resize-y transition focus:border-primary focus:ring-2 focus:ring-primary/10" id="customerAddress" minlength="8" name="address" placeholder="Город, улица, дом, квартира" required></textarea>
-</span>
-</label>
-</div>
-<button aria-describedby="orderStatus" class="mt-8 inline-flex items-center justify-center gap-3 w-full h-14 bg-primary/45 text-on-primary font-label-md text-label-md rounded-full tracking-wider uppercase cursor-not-allowed" disabled id="orderSubmit" type="submit">
-<span aria-hidden="true" class="material-symbols-outlined text-[19px]">send</span>
-                Оформить заказ — скоро
-</button>
-<p aria-live="polite" class="mt-4 text-center font-body-sm text-body-sm text-secondary" id="orderStatus">Форма готова. Отправка заработает после подключения Telegram-бота.</p>
-</form>
-</div>
-</section>
-</main>
-<!-- Footer JSON Component -->
-<footer id="footer" class="w-full border-t border-tertiary/10 flat no shadows flex flex-col items-center gap-unit py-12 px-margin-mobile text-center bg-surface-container-low dark:bg-surface-container-highest mt-section-gap">
-<h4 class="font-label-md text-label-md uppercase tracking-widest text-primary mb-4">Свет.</h4>
-<div class="flex gap-6 mb-6">
-<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Инстаграм</a>
-<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Телеграм</a>
-<a class="text-secondary font-label-sm text-label-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Почта</a>
-</div>
-<p class="font-label-sm text-label-sm text-secondary dark:text-secondary-fixed">© 2026 Свет. Coffee Rituals.</p>
-</footer>
-<script>
-        // Scroll Reveal Logic
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.1
-        };
+<body>
+  <a class="skip-link" href="#main">К содержанию</a>
+  <div class="page-glow" aria-hidden="true"></div>
+  <div class="site-intro" data-site-intro aria-hidden="true">
+    <div class="site-intro__slices">
+      <i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="site-intro__brand">
+      <p>Свет<span>.</span></p>
+      <small>кофе · тёплая еда · пауза</small>
+    </div>
+    <div class="site-intro__beam"></div>
+  </div>
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
+  <header class="site-header" data-site-header>
+    <button class="round-button header-menu" type="button" data-open-nav aria-label="Открыть навигацию" aria-controls="navDialog">
+      <span class="burger-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+    <a class="wordmark" href="#top" aria-label="Свет. На главную">Свет.</a>
+    <button class="header-order" type="button" data-open-cart aria-label="Открыть корзину">
+      <span>Заказ</span>
+      <svg aria-hidden="true"><use href="#icon-bag"></use></svg>
+      <span class="header-order__count" data-cart-count hidden>0</span>
+    </button>
+  </header>
 
-        document.querySelectorAll('.fade-in').forEach((element) => {
-            observer.observe(element);
-        });
-        // Never leave content invisible if a mobile browser delays IntersectionObserver during a fast scroll.
-        window.setTimeout(() => {
-            document.querySelectorAll('.fade-in:not(.visible)').forEach((element) => element.classList.add('visible'));
-        }, 900);
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="heroTitle">
+      <div class="hero__media" aria-hidden="true">
+        <img src="assets/hero-cafe-v2.webp" alt="" width="1939" height="2200" fetchpriority="high" decoding="async" data-hero-image>
+      </div>
+      <div class="hero__veil" aria-hidden="true"></div>
+      <div class="hero__content page-shell">
+        <p class="eyebrow hero__eyebrow" data-hero-item>Кофейня · каждый день</p>
+        <h1 id="heroTitle" class="hero__title" data-hero-item>Свет<span>.</span></h1>
+        <div class="hero__footer" data-hero-item>
+          <p>Кофе, тёплая еда<br>и место для паузы.</p>
+          <a class="glass-button" href="#menu">
+            Смотреть меню
+            <svg aria-hidden="true"><use href="#icon-arrow-down"></use></svg>
+          </a>
+        </div>
+      </div>
+    </section>
 
-        // App Bar Scroll Effect
-        const topAppBar = document.getElementById('topAppBar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                topAppBar.classList.add('bg-surface/90', 'backdrop-blur-md', 'shadow-sm');
-                topAppBar.classList.remove('bg-transparent');
-            } else {
-                topAppBar.classList.remove('bg-surface/90', 'backdrop-blur-md', 'shadow-sm');
-                topAppBar.classList.add('bg-transparent');
-            }
-        });
+    <section class="story section" id="story" aria-labelledby="storyTitle">
+      <div class="page-shell">
+        <div class="section-number reveal" aria-hidden="true">01 / О нас</div>
+        <div class="story__intro">
+          <h2 id="storyTitle" class="display reveal" data-split-lines>Здесь можно<br>не спешить.</h2>
+          <div class="story__copy reveal">
+            <p class="lead">Мы любим ясные вкусы, тёплый свет и тихие утренние ритуалы.</p>
+            <p>Готовим кофе, завтраки и вафли весь день. Можно заглянуть на пять минут или остаться подольше — у окна всегда чуть спокойнее.</p>
+          </div>
+        </div>
 
-        // Navigation Drawer Logic
-        const menuButton = document.getElementById('menuButton');
-        const closeMenuButton = document.getElementById('closeMenuButton');
-        const navDrawer = document.getElementById('navDrawer');
-        const drawerOverlay = document.getElementById('drawerOverlay');
+        <div class="story__gallery">
+          <figure class="story__portrait media-reveal" data-parallax="0.07">
+            <img src="assets/story-cafe-v2.webp" alt="Светлый стол у окна в кофейне" width="1457" height="2200" loading="lazy" decoding="async">
+          </figure>
+          <div class="story__note reveal">
+            <span aria-hidden="true">☼</span>
+            <p>Мягкий свет.<br>Честный кофе.<br>Ничего лишнего.</p>
+          </div>
+          <figure class="story__detail media-reveal" data-parallax="-0.05">
+            <img src="assets/coffee-break.webp" alt="Чашка кофе на светлом столе" width="512" height="279" loading="lazy" decoding="async">
+          </figure>
+        </div>
+      </div>
+    </section>
 
-        function openMenu() {
-            navDrawer.classList.remove('-translate-x-full');
-            drawerOverlay.classList.remove('hidden');
-            // small delay to allow display:block to apply before opacity transition
-            setTimeout(() => {
-                drawerOverlay.classList.remove('opacity-0');
-            }, 10);
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        }
+    <section class="menu-section section" id="menu" aria-labelledby="menuTitle">
+      <div class="page-shell menu-section__heading">
+        <div>
+          <div class="section-number reveal" aria-hidden="true">02 / Меню</div>
+          <h2 id="menuTitle" class="display reveal">Меню.</h2>
+        </div>
+        <div class="menu-section__aside reveal">
+          <p>Листайте карточки вбок: пальцем или удерживая курсор. Нажмите на понравившуюся, чтобы открыть категорию.</p>
+          <div class="rail-progress" aria-hidden="true"><span data-rail-progress></span></div>
+        </div>
+      </div>
 
-        function closeMenu() {
-            navDrawer.classList.add('-translate-x-full');
-            drawerOverlay.classList.add('opacity-0');
-            setTimeout(() => {
-                drawerOverlay.classList.add('hidden');
-            }, 300); // match transition duration
-            document.body.style.overflow = '';
-        }
+      <div class="menu-rail-wrap">
+        <p class="menu-status" data-menu-status aria-live="polite">Готовим меню…</p>
+        <div class="menu-rail" data-menu-rail aria-label="Категории меню" tabindex="0"></div>
+      </div>
+    </section>
 
-        menuButton.addEventListener('click', openMenu);
-        closeMenuButton.addEventListener('click', closeMenu);
-        drawerOverlay.addEventListener('click', closeMenu);
-        
-        // Close menu on link click
-        navDrawer.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', closeMenu);
-        });
+    <section class="season section" id="season" aria-labelledby="seasonTitle">
+      <div class="page-shell">
+        <div class="section-number reveal" aria-hidden="true">03 / Сейчас</div>
+        <article class="season-card media-reveal">
+          <img src="assets/contest-poster-v2.webp" alt="Постер конкурса «Три вкуса» с тремя сезонными напитками" width="1086" height="1448" loading="lazy" decoding="async">
+          <div class="season-card__shade" aria-hidden="true"></div>
+          <div class="season-card__content reveal">
+            <p class="eyebrow">Свет. × МАРТ Цветы</p>
+            <h2 id="seasonTitle">Три вкуса.<br><em>Одно лето.</em></h2>
+            <button class="glass-button glass-button--light" type="button" data-open-contest>
+              Открыть
+              <svg aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
 
-        // Hero remains static while scrolling: moving a large image on scroll caused visible mobile jank.
-    </script>
-<script defer src="assets/menu.js?v=9"></script>
-</body></html>
+    <section class="interlude" aria-label="Атмосфера кофейни">
+      <div class="interlude__media media-reveal">
+        <img src="assets/interlude-cafe-v3.webp" alt="Кофемашина и посуда в кофейне «Свет.»" width="2200" height="945" loading="lazy" decoding="async" data-parallax="0.06">
+      </div>
+      <p class="interlude__quote reveal">«Иногда нужен<br>только кофе <em>и свет</em>»</p>
+    </section>
+
+    <section class="quick-order section" id="order" aria-labelledby="orderTitle">
+      <div class="page-shell quick-order__grid">
+        <div class="quick-order__intro">
+          <div class="section-number section-number--light reveal" aria-hidden="true">04 / Заказать</div>
+          <h2 id="orderTitle" class="display display--light reveal">Расскажите,<br>чего хочется.</h2>
+          <p class="reveal">Соберите корзину в меню или оставьте свободную заявку — мы уточним детали по телефону.</p>
+        </div>
+
+        <form class="request-form reveal" data-quick-form novalidate>
+          <label class="field field--large">
+            <span>Ваш заказ</span>
+            <textarea name="comment" rows="3" minlength="3" required placeholder="Например: два капучино и сладкую вафлю"></textarea>
+          </label>
+          <div class="request-form__row">
+            <label class="field">
+              <span>Имя</span>
+              <input type="text" name="name" autocomplete="name" minlength="2" required placeholder="Как к вам обращаться">
+            </label>
+            <label class="field">
+              <span>Телефон</span>
+              <input type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="+7 900 000-00-00">
+            </label>
+          </div>
+          <label class="field">
+            <span>Адрес <small>если нужна доставка</small></span>
+            <input type="text" name="address" autocomplete="street-address" placeholder="Улица, дом, квартира">
+          </label>
+          <p class="form-status" data-form-status aria-live="polite"></p>
+          <label class="consent-check">
+            <input type="checkbox" name="personalDataConsent" required>
+            <span>Согласен на <a href="legal.html#consent" target="_blank" rel="noopener">обработку персональных данных</a> и ознакомлен с <a href="legal.html#privacy" target="_blank" rel="noopener">политикой конфиденциальности</a>.</span>
+          </label>
+          <button class="submit-button" type="submit">
+            <span>Отправить заявку</span>
+            <svg aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+          </button>
+          <p class="form-note">Нажимая кнопку, вы соглашаетесь на обработку данных для связи по заказу.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contacts">
+    <div class="page-shell footer__grid">
+      <a class="footer__brand" href="#top">Свет.</a>
+      <div class="footer__column">
+        <p class="footer__label">Навигация</p>
+        <a href="#story">О кофейне</a>
+        <a href="#menu">Меню</a>
+        <a href="#order">Заказать</a>
+      </div>
+      <div class="footer__column">
+        <p class="footer__label">Мы на связи</p>
+        <a href="#" data-contact-link>Телефон скоро появится</a>
+        <a href="#">Telegram</a>
+        <a href="#">Instagram</a>
+      </div>
+      <div class="footer__column footer__legal">
+        <p class="footer__label">Документы</p>
+        <a href="legal.html#privacy">Политика конфиденциальности</a>
+        <a href="legal.html#consent">Согласие на обработку данных</a>
+        <a href="legal.html#cookies">Использование cookie</a>
+        <a href="legal.html#terms">Условия оформления заказа</a>
+      </div>
+      <p class="footer__small">© 2026 Свет.<br>Каждый день · 08:00–22:00</p>
+    </div>
+  </footer>
+
+  <button class="cart-fab" type="button" data-cart-fab data-open-cart aria-label="Открыть корзину" hidden>
+    <span class="cart-fab__icon"><svg aria-hidden="true"><use href="#icon-bag"></use></svg></span>
+    <span class="cart-fab__copy">
+      <span class="cart-fab__label">Корзина</span>
+      <small data-cart-fab-total>Открыть заказ</small>
+    </span>
+    <span class="cart-fab__count" data-cart-count>0</span>
+  </button>
+
+  <aside class="cookie-notice" data-cookie-notice hidden aria-label="Уведомление об использовании cookie">
+    <p>Используем только необходимые настройки сайта и корзины.</p>
+    <div>
+      <a href="legal.html#cookies">Подробнее</a>
+      <button type="button" data-cookie-accept>Понятно</button>
+    </div>
+  </aside>
+
+  <dialog class="nav-dialog" id="navDialog" aria-label="Навигация">
+    <div class="nav-dialog__top">
+      <span class="wordmark">Свет.</span>
+      <button class="round-button round-button--light" type="button" data-close-nav aria-label="Закрыть навигацию">
+        <svg aria-hidden="true"><use href="#icon-close"></use></svg>
+      </button>
+    </div>
+    <nav class="nav-dialog__links" aria-label="Основная навигация">
+      <a href="#story"><span>01</span>О кофейне</a>
+      <a href="#menu"><span>02</span>Меню</a>
+      <a href="#season"><span>03</span>Сейчас</a>
+      <a href="#order"><span>04</span>Заказать</a>
+    </nav>
+    <div class="nav-dialog__bottom">
+      <p>Кофе · завтраки · тишина</p>
+      <p>Каждый день · 08:00–22:00</p>
+    </div>
+  </dialog>
+
+  <dialog class="menu-dialog" id="menuDialog" aria-labelledby="menuDialogTitle">
+    <div class="menu-dialog__surface">
+      <header class="menu-dialog__hero">
+        <img src="assets/menu-coffee.webp" alt="" width="1122" height="1402" data-dialog-image>
+        <div class="menu-dialog__hero-shade" aria-hidden="true"></div>
+        <div class="menu-dialog__title">
+          <p class="eyebrow" data-dialog-eyebrow>Меню</p>
+          <h2 id="menuDialogTitle" data-dialog-title>Кофе</h2>
+          <p data-dialog-description>Классика и авторские напитки</p>
+        </div>
+      </header>
+      <div class="menu-dialog__body">
+        <nav class="category-tabs" aria-label="Разделы категории" data-category-tabs></nav>
+        <div class="product-list" data-product-list></div>
+        <div class="menu-dialog__extras" data-menu-extras></div>
+      </div>
+    </div>
+    <button class="round-button menu-dialog__close" type="button" data-close-menu-dialog aria-label="Закрыть меню">
+      <svg aria-hidden="true"><use href="#icon-close"></use></svg>
+    </button>
+    <div class="dialog-scroll-track" aria-hidden="true"><span data-menu-dialog-progress></span></div>
+  </dialog>
+
+  <dialog class="contest-dialog" id="contestDialog" aria-labelledby="contestDialogTitle">
+    <div class="contest-dialog__surface">
+      <header class="contest-dialog__header">
+        <div>
+          <p class="eyebrow">Свет. × МАРТ Цветы</p>
+          <h2 id="contestDialogTitle">Три вкуса.</h2>
+          <p>Специальное меню конкурса</p>
+        </div>
+        <button class="round-button" type="button" data-close-contest aria-label="Закрыть конкурсное меню">
+          <svg aria-hidden="true"><use href="#icon-close"></use></svg>
+        </button>
+      </header>
+      <div class="contest-dialog__content">
+        <div class="contest-products" data-contest-products></div>
+        <section class="contest-rules" aria-labelledby="contestRulesTitle">
+          <p class="eyebrow">Розыгрыш iPhone Air</p>
+          <h3 id="contestRulesTitle">Как участвовать</h3>
+          <ol>
+            <li><span>01</span><p>Купить любой напиток из специального меню.</p></li>
+            <li><span>02</span><p>Зарегистрировать чек у бариста.</p></li>
+            <li><span>03</span><p>Выложить сторис в любой социальной сети с отметками <strong>@svet.ishim</strong> и <strong>@mart_flowers</strong>.</p></li>
+          </ol>
+          <div class="contest-rules__note">
+            <p>Отметка в сторис требуется только при регистрации первого чека. Последующие чеки можно регистрировать без публикации.</p>
+            <p>Каждый чек регистрируется отдельно при покупке напитка. Чем больше зарегистрированных чеков, тем больше шансов выиграть iPhone Air.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="cart-dialog" id="cartDialog" aria-labelledby="cartTitle">
+    <div class="cart-dialog__surface">
+      <header class="sheet-header">
+        <div>
+          <p class="eyebrow">Ваш выбор</p>
+          <h2 id="cartTitle">Корзина</h2>
+        </div>
+        <button class="round-button" type="button" data-close-cart aria-label="Закрыть корзину">
+          <svg aria-hidden="true"><use href="#icon-close"></use></svg>
+        </button>
+      </header>
+      <div class="cart-dialog__content">
+        <div data-cart-view>
+          <div class="cart-list" data-cart-list></div>
+          <div class="cart-summary" data-cart-summary hidden>
+            <div><span>Итого</span><strong data-cart-total>0 ₽</strong></div>
+            <button class="submit-button" type="button" data-start-checkout>
+              <span>Перейти к оформлению</span>
+              <svg aria-hidden="true"><use href="#icon-arrow-right"></use></svg>
+            </button>
+          </div>
+        </div>
+        <form class="checkout-form" data-checkout-form hidden novalidate>
+          <button class="text-button" type="button" data-back-to-cart>
+            <svg aria-hidden="true"><use href="#icon-arrow-left"></use></svg>
+            Назад к составу
+          </button>
+          <h3>Куда привезти?</h3>
+          <label class="field field--paper">
+            <span>Имя</span>
+            <input type="text" name="name" autocomplete="name" minlength="2" required placeholder="Ваше имя">
+          </label>
+          <label class="field field--paper">
+            <span>Телефон</span>
+            <input type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="+7 900 000-00-00">
+          </label>
+          <label class="field field--paper">
+            <span>Адрес</span>
+            <input type="text" name="address" autocomplete="street-address" minlength="5" required placeholder="Улица, дом, квартира">
+          </label>
+          <label class="field field--paper">
+            <span>Комментарий</span>
+            <textarea name="comment" rows="2" placeholder="Домофон, пожелания к заказу"></textarea>
+          </label>
+          <p class="form-status" data-checkout-status aria-live="polite"></p>
+          <label class="consent-check consent-check--paper">
+            <input type="checkbox" name="personalDataConsent" required>
+            <span>Согласен на <a href="legal.html#consent" target="_blank" rel="noopener">обработку персональных данных</a> и ознакомлен с <a href="legal.html#privacy" target="_blank" rel="noopener">политикой</a>.</span>
+          </label>
+          <button class="submit-button" type="submit">
+            <span data-checkout-label>Заказать</span>
+            <svg aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="success-dialog" id="successDialog" aria-labelledby="successTitle">
+    <div class="success-dialog__light" aria-hidden="true"></div>
+    <div class="success-dialog__mark" aria-hidden="true">
+      <svg><use href="#icon-check"></use></svg>
+    </div>
+    <p class="eyebrow">Готово</p>
+    <h2 id="successTitle">Заявка отправлена.</h2>
+    <p data-success-text>Мы свяжемся с вами по указанному номеру, чтобы подтвердить детали.</p>
+    <div class="success-dialog__order" data-success-order hidden></div>
+    <a class="text-button success-dialog__phone" href="#" data-success-phone hidden></a>
+    <button class="submit-button" type="button" data-close-success><span>Вернуться на сайт</span></button>
+  </dialog>
+
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+  <svg class="icon-sprite" aria-hidden="true">
+    <symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="icon-bag" viewBox="0 0 24 24"><path d="M5 8.5h14l-1 12H6l-1-12Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></symbol>
+    <symbol id="icon-arrow-down" viewBox="0 0 24 24"><path d="M12 4v16m0 0 6-6m-6 6-6-6"/></symbol>
+    <symbol id="icon-arrow-left" viewBox="0 0 24 24"><path d="M20 12H4m0 0 6-6m-6 6 6 6"/></symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24"><path d="M4 12h16m0 0-6-6m6 6-6 6"/></symbol>
+    <symbol id="icon-arrow-up-right" viewBox="0 0 24 24"><path d="M5 19 19 5M8 5h11v11"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4.5 4.5L19 7"/></symbol>
+  </svg>
+</body>
+</html>
