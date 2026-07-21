@@ -5,11 +5,12 @@
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var saveData = Boolean(navigator.connection && navigator.connection.saveData);
   var formatMoney = new Intl.NumberFormat('ru-RU');
-  var CART_STORAGE_KEY = 'svet-cart-v5';
-  var COOKIE_CONSENT_KEY = 'svet-cookie-consent-v1';
+  var CART_STORAGE_KEY = 'svet-cart-session-v8';
+  var COOKIE_CONSENT_KEY = 'svet-cookie-consent-v2';
   var toastTimer = null;
   var menuData = null;
   var activeGroupIndex = 0;
+  clearLegacyCart();
   var cart = readCart();
 
   var groups = [
@@ -85,6 +86,8 @@
     checkoutStatus: document.querySelector('[data-checkout-status]'),
     cartFab: document.querySelector('[data-cart-fab]'),
     cartFabTotal: document.querySelector('[data-cart-fab-total]'),
+    menuCart: document.querySelector('[data-menu-cart]'),
+    menuCartTotal: document.querySelector('[data-menu-cart-total]'),
     quickForm: document.querySelector('[data-quick-form]'),
     successDialog: document.getElementById('successDialog'),
     successTitle: document.getElementById('successTitle'),
@@ -125,7 +128,7 @@
 
   function readCart() {
     try {
-      var stored = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+      var stored = JSON.parse(sessionStorage.getItem(CART_STORAGE_KEY) || '[]');
       return Array.isArray(stored) ? stored.filter(function (entry) {
         return entry && entry.name && Number.isFinite(entry.price) && Number.isFinite(entry.quantity);
       }) : [];
@@ -136,10 +139,19 @@
 
   function saveCart() {
     try {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      sessionStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
     } catch (error) {
       // The cart still works for the current session when storage is unavailable.
     }
+  }
+
+  function clearLegacyCart() {
+    try {
+      ['svet-cart-v5', 'svet-cart-v6', 'svet-cart-v7'].forEach(function (key) {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
+    } catch (error) {}
   }
 
   function cartCount() {
@@ -808,7 +820,49 @@
     var body = dom.menuDialog.querySelector('.menu-dialog__body');
     if (surface) surface.addEventListener('scroll', updateMenuDialogProgress, { passive: true });
     if (body) body.addEventListener('scroll', updateMenuDialogProgress, { passive: true });
+    if (surface) initMenuSwipeClose(surface, body);
     window.addEventListener('resize', updateMenuDialogProgress, { passive: true });
+  }
+
+  function initMenuSwipeClose(surface, body) {
+    var startY = 0;
+    var distance = 0;
+    var tracking = false;
+    var pointerId = null;
+    surface.addEventListener('pointerdown', function (event) {
+      if (!window.matchMedia('(max-width: 47.99rem)').matches) return;
+      if (surface.scrollTop > 1 || (body && body.scrollTop > 1)) return;
+      if (event.target.closest('button, input, textarea, a')) return;
+      startY = event.clientY;
+      distance = 0;
+      tracking = true;
+      pointerId = event.pointerId;
+      surface.setPointerCapture(pointerId);
+    });
+    surface.addEventListener('pointermove', function (event) {
+      if (!tracking || event.pointerId !== pointerId) return;
+      distance = Math.max(0, event.clientY - startY);
+      if (distance < 8) return;
+      event.preventDefault();
+      dom.menuDialog.classList.add('is-swiping');
+      dom.menuDialog.style.setProperty('--swipe-y', Math.min(distance, 280) + 'px');
+    });
+    surface.addEventListener('pointerup', function (event) {
+      if (!tracking || event.pointerId !== pointerId) return;
+      tracking = false;
+      pointerId = null;
+      dom.menuDialog.classList.remove('is-swiping');
+      dom.menuDialog.style.removeProperty('--swipe-y');
+      if (distance > 105) closeDialog(dom.menuDialog, 540);
+      distance = 0;
+    });
+    surface.addEventListener('pointercancel', function () {
+      tracking = false;
+      pointerId = null;
+      distance = 0;
+      dom.menuDialog.classList.remove('is-swiping');
+      dom.menuDialog.style.removeProperty('--swipe-y');
+    });
   }
 
   function updateMenuDialogProgress() {
@@ -955,6 +1009,8 @@
       node.hidden = count === 0 && node.classList.contains('header-order__count');
     });
     dom.cartFab.hidden = count === 0;
+    if (dom.menuCart) dom.menuCart.hidden = count === 0;
+    if (dom.menuCartTotal) dom.menuCartTotal.textContent = money(cartPrice());
     if (dom.cartFabTotal) {
       dom.cartFabTotal.textContent = count
         ? count + ' ' + plural(count, 'позиция', 'позиции', 'позиций') + ' · ' + money(cartPrice())
@@ -962,10 +1018,14 @@
     }
     renderCart();
     syncInlineQuantities();
-    if (dom.checkoutLabel) dom.checkoutLabel.textContent = 'Заказать · ' + money(cartPrice());
+    if (dom.checkoutLabel) dom.checkoutLabel.textContent = 'Оформить · ' + money(cartPrice());
   }
 
   function openCart() {
+    if (dom.menuDialog && dom.menuDialog.open) {
+      dom.menuDialog.close();
+      dom.menuDialog.classList.remove('is-visible', 'is-closing', 'is-swiping');
+    }
     dom.cartView.hidden = false;
     dom.checkoutForm.hidden = true;
     dom.checkoutStatus.textContent = '';
@@ -978,8 +1038,8 @@
     dom.cartView.hidden = opened;
     dom.checkoutForm.hidden = !opened;
     if (opened) {
-      dom.checkoutLabel.textContent = 'Заказать · ' + money(cartPrice());
-      var firstInput = dom.checkoutForm.querySelector('input');
+      dom.checkoutLabel.textContent = 'Оформить · ' + money(cartPrice());
+      var firstInput = dom.checkoutForm.querySelector('input[name="name"]');
       window.setTimeout(function () { if (firstInput) firstInput.focus(); }, reducedMotion ? 0 : 320);
     }
   }
@@ -1065,7 +1125,9 @@
       ? 'Заказ' + (result.orderId ? ' №' + result.orderId : '') + ' отправлен.'
       : 'Заявка собрана.';
     dom.successText.textContent = sent
-      ? 'Мы свяжемся с вами по указанному номеру, чтобы подтвердить детали.'
+      ? (payload.paymentMethod === 'online'
+        ? 'Заказ создан и ожидает онлайн-оплату. Сотрудник подтвердит наличие и отправит ссылку на оплату.'
+        : 'Мы свяжемся с вами по указанному номеру, чтобы подтвердить детали.')
       : 'Форма работает в демонстрационном режиме: отправка на сервер ещё не подключена.';
     renderSuccessOrder(payload);
     if (config.contactPhoneLabel && config.contactPhoneHref) {
@@ -1078,14 +1140,18 @@
     openDialog(dom.successDialog);
   }
 
-  function submitForm(form, statusNode, source) {
+  function submitForm(form, statusNode, source, action, submitButton) {
     if (!markValidation(form)) return;
-    var button = form.querySelector('button[type="submit"]');
+    var button = submitButton || form.querySelector('button[type="submit"]');
+    var submitButtons = Array.prototype.slice.call(form.querySelectorAll('button[type="submit"]'));
     var originalLabel = button.querySelector('span') ? button.querySelector('span').textContent : button.textContent;
     var customer = readCustomer(form);
     var isCart = source === 'cart';
+    var formData = new FormData(form);
     var payload = {
       source: source,
+      fulfillment: isCart ? String(formData.get('fulfillment') || 'pickup') : 'callback',
+      paymentMethod: isCart && action === 'pay' ? 'online' : 'on_receipt',
       customer: customer,
       items: isCart ? cart.map(function (entry) {
         return { name: entry.name, variant: entry.variant, unitPrice: entry.price, quantity: entry.quantity };
@@ -1093,7 +1159,7 @@
       total: isCart ? cartPrice() : 0,
       createdAt: new Date().toISOString()
     };
-    button.disabled = true;
+    submitButtons.forEach(function (node) { node.disabled = true; });
     if (button.querySelector('span')) button.querySelector('span').textContent = 'Отправляем…';
     statusNode.textContent = '';
     submitPayload(payload)
@@ -1115,7 +1181,7 @@
         statusNode.textContent = 'Не удалось отправить. Проверьте соединение и попробуйте ещё раз.';
       })
       .finally(function () {
-        button.disabled = false;
+        submitButtons.forEach(function (node) { node.disabled = false; });
         if (button.querySelector('span')) button.querySelector('span').textContent = originalLabel;
       });
   }
@@ -1130,11 +1196,33 @@
     });
     dom.quickForm.addEventListener('submit', function (event) {
       event.preventDefault();
-      submitForm(dom.quickForm, dom.quickForm.querySelector('[data-form-status]'), 'quick-request');
+      submitForm(dom.quickForm, dom.quickForm.querySelector('[data-form-status]'), 'quick-request', 'order', event.submitter);
     });
     dom.checkoutForm.addEventListener('submit', function (event) {
       event.preventDefault();
-      submitForm(dom.checkoutForm, dom.checkoutStatus, 'cart');
+      submitForm(dom.checkoutForm, dom.checkoutStatus, 'cart', event.submitter ? event.submitter.value : 'order', event.submitter);
+    });
+    var deliveryField = dom.checkoutForm.querySelector('[data-delivery-field]');
+    var addressField = deliveryField ? deliveryField.querySelector('input[name="address"]') : null;
+    dom.checkoutForm.querySelectorAll('input[name="fulfillment"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        var delivery = radio.value === 'delivery' && radio.checked;
+        if (!radio.checked || !deliveryField || !addressField) return;
+        deliveryField.hidden = !delivery;
+        addressField.required = delivery;
+        if (!delivery) {
+          addressField.value = '';
+          addressField.setCustomValidity('');
+        }
+      });
+    });
+    dom.checkoutForm.addEventListener('reset', function () {
+      window.setTimeout(function () {
+        if (deliveryField && addressField) {
+          deliveryField.hidden = true;
+          addressField.required = false;
+        }
+      }, 0);
     });
     document.querySelector('[data-close-success]').addEventListener('click', function () { closeDialog(dom.successDialog, 560); });
     attachDialogCancel(dom.successDialog, 560);

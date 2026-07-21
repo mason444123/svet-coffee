@@ -8,10 +8,10 @@
   <title>Свет. — кофе и тихие завтраки</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/hero-cafe-v2.webp" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="assets/styles.css?v=7">
+  <link rel="stylesheet" href="assets/styles.css?v=8.2-20260721">
   <script>document.documentElement.classList.add('js', 'intro-pending');</script>
-  <script src="assets/config.js?v=7"></script>
-  <script defer src="assets/app.js?v=7"></script>
+  <script src="assets/config.js?v=8.2-20260721"></script>
+  <script defer src="assets/app.js?v=8.2-20260721"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">К содержанию</a>
@@ -251,6 +251,11 @@
     <button class="round-button menu-dialog__close" type="button" data-close-menu-dialog aria-label="Закрыть меню">
       <svg aria-hidden="true"><use href="#icon-close"></use></svg>
     </button>
+    <button class="menu-dialog__cart" type="button" data-menu-cart data-open-cart aria-label="Открыть корзину из меню" hidden>
+      <span><svg aria-hidden="true"><use href="#icon-bag"></use></svg></span>
+      <strong data-menu-cart-total>0 ₽</strong>
+      <small data-cart-count>0</small>
+    </button>
     <div class="dialog-scroll-track" aria-hidden="true"><span data-menu-dialog-progress></span></div>
   </dialog>
 
@@ -313,6 +318,17 @@
             Назад к составу
           </button>
           <h3>Куда привезти?</h3>
+          <fieldset class="fulfillment-picker">
+            <legend>Как получить заказ</legend>
+            <label>
+              <input type="radio" name="fulfillment" value="pickup" checked>
+              <span>Самовывоз<small>Заберу в кофейне</small></span>
+            </label>
+            <label>
+              <input type="radio" name="fulfillment" value="delivery">
+              <span>Доставка<small>Привезти по адресу</small></span>
+            </label>
+          </fieldset>
           <label class="field field--paper">
             <span>Имя</span>
             <input type="text" name="name" autocomplete="name" minlength="2" required placeholder="Ваше имя">
@@ -321,9 +337,9 @@
             <span>Телефон</span>
             <input type="tel" name="phone" autocomplete="tel" inputmode="tel" required placeholder="+7 900 000-00-00">
           </label>
-          <label class="field field--paper">
+          <label class="field field--paper" data-delivery-field hidden>
             <span>Адрес</span>
-            <input type="text" name="address" autocomplete="street-address" minlength="5" required placeholder="Улица, дом, квартира">
+            <input type="text" name="address" autocomplete="street-address" minlength="5" placeholder="Улица, дом, квартира">
           </label>
           <label class="field field--paper">
             <span>Комментарий</span>
@@ -334,10 +350,16 @@
             <input type="checkbox" name="personalDataConsent" required>
             <span>Согласен на <a href="legal.html#consent" target="_blank" rel="noopener">обработку персональных данных</a> и ознакомлен с <a href="legal.html#privacy" target="_blank" rel="noopener">политикой</a>.</span>
           </label>
-          <button class="submit-button" type="submit">
-            <span data-checkout-label>Заказать</span>
-            <svg aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
-          </button>
+          <div class="checkout-actions">
+            <button class="submit-button submit-button--pay" type="submit" name="checkoutAction" value="pay">
+              <span>Оплатить</span>
+              <svg aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+            </button>
+            <button class="submit-button" type="submit" name="checkoutAction" value="order">
+              <span data-checkout-label>Оформить заказ</span>
+              <svg aria-hidden="true"><use href="#icon-arrow-up-right"></use></svg>
+            </button>
+          </div>
         </form>
       </div>
     </div>

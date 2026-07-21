@@ -1395,12 +1395,19 @@ dialog.is-closing::backdrop {
   transition-duration: .72s;
 }
 
+.menu-dialog.is-swiping .menu-dialog__surface {
+  opacity: .96;
+  transform: translate3d(0, var(--swipe-y, 0), 0) scale(.992);
+  transition: none;
+}
+
 .menu-dialog__hero {
   position: relative;
   min-height: 42svh;
   overflow: hidden;
   background: #a58b76;
   color: white;
+  touch-action: none;
 }
 
 .menu-dialog__hero > img {
@@ -1434,6 +1441,66 @@ dialog.is-closing::backdrop {
   color: var(--ink);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+}
+
+.menu-dialog__cart {
+  position: fixed;
+  z-index: 9;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  left: max(1rem, env(safe-area-inset-left));
+  display: grid;
+  min-width: 4.8rem;
+  min-height: 4.8rem;
+  padding: .55rem;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 1.35rem;
+  background: rgba(27,33,28,.94);
+  color: white;
+  box-shadow: 0 1rem 3rem rgba(23,20,17,.28);
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  animation: fab-in .55s var(--ease-out) both;
+}
+
+.menu-dialog__cart[hidden] {
+  display: none;
+}
+
+.menu-dialog__cart > span {
+  display: grid;
+  width: 1.85rem;
+  height: 1.85rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.1);
+}
+
+.menu-dialog__cart svg {
+  width: .9rem;
+  height: .9rem;
+}
+
+.menu-dialog__cart strong {
+  font-size: .63rem;
+  font-weight: 600;
+}
+
+.menu-dialog__cart small {
+  position: absolute;
+  top: -.35rem;
+  right: -.35rem;
+  display: grid;
+  min-width: 1.55rem;
+  height: 1.55rem;
+  padding: 0 .3rem;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--light);
+  color: var(--ink);
+  font-size: .62rem;
+  font-weight: 700;
 }
 
 .dialog-scroll-track {
@@ -2137,6 +2204,86 @@ dialog.is-closing::backdrop {
   letter-spacing: -.04em;
 }
 
+.fulfillment-picker {
+  display: grid;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  grid-template-columns: 1fr 1fr;
+  gap: .55rem;
+  border: 0;
+}
+
+.fulfillment-picker legend {
+  width: 100%;
+  margin-bottom: .65rem;
+  color: var(--ink-soft);
+  font-size: .66rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.fulfillment-picker label {
+  position: relative;
+  cursor: pointer;
+}
+
+.fulfillment-picker input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fulfillment-picker span {
+  display: grid;
+  min-height: 4.5rem;
+  padding: .85rem .9rem;
+  align-content: center;
+  gap: .18rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: rgba(255,255,255,.28);
+  font-size: .76rem;
+  transition: background .3s ease, border-color .3s ease, color .3s ease;
+}
+
+.fulfillment-picker small {
+  color: var(--ink-soft);
+  font-size: .61rem;
+}
+
+.fulfillment-picker input:checked + span {
+  border-color: var(--dark);
+  background: var(--dark);
+  color: white;
+}
+
+.fulfillment-picker input:checked + span small {
+  color: rgba(255,255,255,.58);
+}
+
+[data-delivery-field][hidden] {
+  display: none;
+}
+
+.checkout-actions {
+  display: grid;
+  grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr);
+  gap: .55rem;
+}
+
+.checkout-actions .submit-button {
+  min-width: 0;
+  padding-inline: .9rem;
+  gap: .45rem;
+  font-size: .66rem;
+}
+
+.submit-button--pay {
+  border: 1px solid var(--dark);
+  background: transparent;
+  color: var(--dark);
+}
+
 .checkout-form .field {
   margin-bottom: 1.3rem;
 }
@@ -2303,16 +2450,17 @@ dialog.is-closing::backdrop {
   position: fixed;
   z-index: 180;
   bottom: max(1rem, env(safe-area-inset-bottom));
-  left: 1rem;
+  left: 50%;
   width: min(calc(100% - 2rem), 21rem);
-  padding: .85rem .9rem;
+  padding: .68rem .75rem;
   border: 1px solid rgba(255,255,255,.13);
-  border-radius: 1.15rem;
+  border-radius: .78rem;
   background: rgba(27,33,28,.94);
   color: white;
   box-shadow: 0 1.2rem 4rem rgba(23,20,17,.24);
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
+  transform: translateX(-50%);
   animation: cookie-in .72s var(--ease-out) both;
 }
 
@@ -2352,7 +2500,8 @@ dialog.is-closing::backdrop {
 }
 
 @keyframes cookie-in {
-  from { opacity: 0; transform: translateY(1rem) scale(.96); }
+  from { opacity: 0; transform: translate(-50%, .8rem) scale(.97); }
+  to { opacity: 1; transform: translateX(-50%); }
 }
 
 .success-dialog .submit-button {
