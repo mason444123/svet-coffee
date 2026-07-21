@@ -638,7 +638,7 @@ svg {
 
 .hero__eyebrow {
   position: absolute;
-  top: 37%;
+  top: 24%;
   left: 0;
 }
 
@@ -3021,7 +3021,7 @@ dialog.is-closing::backdrop {
   }
 
   .hero__eyebrow {
-    top: 30%;
+    top: 22%;
   }
 
   .hero__title {
@@ -3095,7 +3095,7 @@ dialog.is-closing::backdrop {
   }
 
   .hero__eyebrow {
-    top: 32%;
+    top: 24%;
   }
 
   .story__gallery {
