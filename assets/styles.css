@@ -561,17 +561,46 @@ svg {
   overflow: hidden;
 }
 
-.hero__media img {
-  width: 100%;
-  height: 112%;
-  object-fit: cover;
-  object-position: 50% 44%;
+.hero__slides {
+  position: absolute;
+  inset: 0;
   transform: translate3d(0, var(--hero-y, 0), 0) scale(1.045);
   transform-origin: center top;
   will-change: transform;
 }
 
+.hero__slide {
+  position: absolute;
+  inset: -2.5% 0 -7%;
+  width: 100%;
+  height: 109.5%;
+  padding: 0;
+  overflow: hidden;
+  background: #b18a67;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.055);
+  transition: opacity 1.15s var(--ease-smooth), visibility 1.15s, transform 6.8s linear;
+}
+
+.hero__slide.is-active {
+  z-index: 1;
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.hero__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
 .hero__veil {
+  z-index: 2;
+  pointer-events: none;
   background:
     linear-gradient(180deg, rgba(18,16,14,.28) 0%, transparent 28%, transparent 54%, rgba(18,16,14,.52) 100%),
     linear-gradient(90deg, rgba(28,22,17,.11), transparent 55%);
@@ -579,11 +608,18 @@ svg {
 
 .hero__content {
   position: relative;
+  z-index: 3;
   display: flex;
   min-height: 100svh;
   padding: calc(var(--header-height) + 1.5rem) 0 max(2rem, env(safe-area-inset-bottom));
   flex-direction: column;
   justify-content: flex-end;
+  pointer-events: none;
+}
+
+.hero__content button,
+.hero__content a {
+  pointer-events: auto;
 }
 
 .hero__eyebrow {
@@ -605,6 +641,13 @@ svg {
   color: #e8d5bd;
 }
 
+.hero__title--promo {
+  max-width: 8ch;
+  margin-bottom: 1.25rem;
+  font-size: clamp(5.4rem, 22vw, 14rem);
+  line-height: .69;
+}
+
 .hero__footer {
   display: flex;
   align-items: flex-end;
@@ -620,11 +663,92 @@ svg {
   line-height: 1.25;
 }
 
+.hero__promo-copy {
+  max-width: 31rem;
+}
+
+.hero__promo-copy p strong {
+  font-weight: 400;
+}
+
+.hero__promo-copy small {
+  display: block;
+  max-width: 29rem;
+  margin-top: .65rem;
+  color: rgba(255,255,255,.78);
+  font-size: .7rem;
+  line-height: 1.45;
+}
+
 .hero__footer .glass-button {
   border-color: transparent;
   background: rgba(255,255,255,.045);
   -webkit-backdrop-filter: blur(7px);
   backdrop-filter: blur(7px);
+}
+
+.hero__controls {
+  display: flex;
+  margin-top: 1.15rem;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .85rem;
+  pointer-events: auto;
+}
+
+.hero__controls > button {
+  display: grid;
+  width: 2.7rem;
+  height: 2.7rem;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 50%;
+  background: rgba(20,16,13,.1);
+  color: white;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: background .35s ease, transform .35s var(--ease-out);
+}
+
+.hero__controls > button:active {
+  transform: scale(.92);
+}
+
+.hero__controls > button svg {
+  width: .85rem;
+  height: .85rem;
+}
+
+.hero__controls > button:first-child svg { transform: rotate(90deg); }
+.hero__controls > button:last-child svg { transform: rotate(-90deg); }
+
+.hero__dots {
+  display: flex;
+  padding: .55rem .65rem;
+  align-items: center;
+  gap: .45rem;
+  border-radius: 999px;
+  background: rgba(20,16,13,.12);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.hero__dots button {
+  width: .42rem;
+  height: .42rem;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.45);
+  cursor: pointer;
+  transition: width .45s var(--ease-out), background .35s ease;
+}
+
+.hero__dots button.is-active {
+  width: 1.45rem;
+  border-radius: 999px;
+  background: white;
 }
 
 .js [data-hero-item] {
@@ -1756,6 +1880,69 @@ dialog.is-closing::backdrop {
   background: #d9c7b0;
   color: var(--ink);
   transform: scale(1.02);
+}
+
+.syrup-picker {
+  position: relative;
+  z-index: 5;
+}
+
+.syrup-picker.is-open {
+  z-index: 40;
+}
+
+.syrup-picker__panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + .55rem);
+  display: grid;
+  width: min(18rem, calc(100vw - 3rem));
+  max-height: min(21rem, 55vh);
+  padding: .55rem;
+  overflow-y: auto;
+  gap: .15rem;
+  border: 1px solid rgba(31,27,24,.1);
+  border-radius: 1.2rem;
+  background: rgba(247,243,236,.96);
+  box-shadow: 0 1.5rem 4rem rgba(34,27,20,.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(.8rem) scale(.96);
+  transform-origin: right bottom;
+  transition: opacity .35s ease, visibility .35s, transform .5s var(--ease-out);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  overscroll-behavior: contain;
+}
+
+.syrup-picker.is-open .syrup-picker__panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.syrup-picker__panel button {
+  width: 100%;
+  padding: .68rem .8rem;
+  border-radius: .75rem;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-align: left;
+  font-size: .72rem;
+  transition: background .25s ease, color .25s ease;
+}
+
+.syrup-picker__panel button:hover,
+.syrup-picker__panel button[data-selected="true"] {
+  background: var(--dark);
+  color: white;
+}
+
+.syrup-picker__panel button:first-child {
+  margin-bottom: .25rem;
+  border-bottom: 1px solid var(--line);
+  border-radius: .75rem .75rem .3rem .3rem;
 }
 
 .menu-dialog__extras {
@@ -2966,7 +3153,7 @@ dialog.is-closing::backdrop {
     transition-duration: .01ms !important;
   }
 
-  .hero__media img,
+  .hero__slides,
   [data-parallax] {
     transform: none !important;
   }

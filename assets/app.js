@@ -5,11 +5,12 @@
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var saveData = Boolean(navigator.connection && navigator.connection.saveData);
   var formatMoney = new Intl.NumberFormat('ru-RU');
-  var CART_STORAGE_KEY = 'svet-cart-session-v8';
+  var CART_STORAGE_KEY = 'svet-cart-session-v10';
   var COOKIE_CONSENT_KEY = 'svet-cookie-consent-v2';
   var toastTimer = null;
   var menuData = null;
   var activeGroupIndex = 0;
+  var syrupPickerId = 0;
   clearLegacyCart();
   var cart = readCart();
 
@@ -60,6 +61,9 @@
     siteIntro: document.querySelector('[data-site-intro]'),
     header: document.querySelector('[data-site-header]'),
     heroImage: document.querySelector('[data-hero-image]'),
+    heroSlider: document.querySelector('[data-hero-slider]'),
+    heroSlideName: document.querySelector('[data-hero-slide-name]'),
+    heroSlidePrice: document.querySelector('[data-hero-slide-price]'),
     rail: document.querySelector('[data-menu-rail]'),
     railStatus: document.querySelector('[data-menu-status]'),
     railProgress: document.querySelector('[data-rail-progress]'),
@@ -147,7 +151,7 @@
 
   function clearLegacyCart() {
     try {
-      ['svet-cart-v5', 'svet-cart-v6', 'svet-cart-v7'].forEach(function (key) {
+      ['svet-cart-v5', 'svet-cart-v6', 'svet-cart-v7', 'svet-cart-session-v8'].forEach(function (key) {
         localStorage.removeItem(key);
         sessionStorage.removeItem(key);
       });
@@ -342,6 +346,87 @@
       }
     }, { passive: true });
     update();
+  }
+
+  function initHeroSlider() {
+    if (!dom.heroSlider) return;
+    var slides = Array.prototype.slice.call(dom.heroSlider.querySelectorAll('[data-hero-slide]'));
+    var dots = Array.prototype.slice.call(document.querySelectorAll('[data-hero-dot]'));
+    var previousButton = document.querySelector('[data-hero-prev]');
+    var nextButton = document.querySelector('[data-hero-next]');
+    var details = [
+      { name: 'Лимонад персик — маракуйя', price: '260 ₽' },
+      { name: 'Малиново-фисташковый латте', price: '330 ₽' },
+      { name: 'Бабл черничный чизкейк', price: '400 ₽' }
+    ];
+    var active = 0;
+    var timer = 0;
+    var pointerStart = null;
+    var suppressSlideClick = false;
+
+    function show(index, userInitiated) {
+      active = (index + slides.length) % slides.length;
+      slides.forEach(function (slide, slideIndex) {
+        var selected = slideIndex === active;
+        slide.classList.toggle('is-active', selected);
+        slide.setAttribute('aria-hidden', selected ? 'false' : 'true');
+        slide.tabIndex = selected ? 0 : -1;
+      });
+      dots.forEach(function (dot, dotIndex) {
+        var selected = dotIndex === active;
+        dot.classList.toggle('is-active', selected);
+        if (selected) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+      if (dom.heroSlideName) dom.heroSlideName.textContent = details[active].name;
+      if (dom.heroSlidePrice) dom.heroSlidePrice.textContent = details[active].price;
+      if (userInitiated) restart();
+    }
+
+    function restart() {
+      if (timer) window.clearInterval(timer);
+      timer = 0;
+      if (!reducedMotion && !saveData && document.visibilityState !== 'hidden') {
+        timer = window.setInterval(function () { show(active + 1, false); }, 5600);
+      }
+    }
+
+    if (previousButton) previousButton.addEventListener('click', function () { show(active - 1, true); });
+    if (nextButton) nextButton.addEventListener('click', function () { show(active + 1, true); });
+    dots.forEach(function (dot, index) {
+      dot.addEventListener('click', function () { show(index, true); });
+    });
+    slides.forEach(function (slide) {
+      slide.addEventListener('click', openContestDialog);
+    });
+
+    dom.heroSlider.addEventListener('pointerdown', function (event) {
+      pointerStart = { x: event.clientX, y: event.clientY };
+    }, { passive: true });
+    dom.heroSlider.addEventListener('pointerup', function (event) {
+      if (!pointerStart) return;
+      var distanceX = event.clientX - pointerStart.x;
+      var distanceY = event.clientY - pointerStart.y;
+      pointerStart = null;
+      if (Math.abs(distanceX) < 42 || Math.abs(distanceX) < Math.abs(distanceY)) return;
+      suppressSlideClick = true;
+      show(active + (distanceX < 0 ? 1 : -1), true);
+      window.setTimeout(function () { suppressSlideClick = false; }, 80);
+    }, { passive: true });
+    dom.heroSlider.addEventListener('pointercancel', function () { pointerStart = null; }, { passive: true });
+    dom.heroSlider.addEventListener('click', function (event) {
+      if (!suppressSlideClick) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }, true);
+    dom.heroSlider.addEventListener('mouseenter', function () {
+      if (timer) window.clearInterval(timer);
+      timer = 0;
+    });
+    dom.heroSlider.addEventListener('mouseleave', restart);
+    document.addEventListener('visibilitychange', restart);
+    show(0, false);
+    restart();
   }
 
   function initParallax() {
@@ -578,11 +663,28 @@
     return syrup ? Number(syrup.price || 0) : 0;
   }
 
+  function syrupOptions() {
+    if (!menuData || !Array.isArray(menuData.extras)) return [];
+    var syrup = menuData.extras.find(function (extra) {
+      return String(extra.name || '').toLowerCase().indexOf('сироп') !== -1;
+    });
+    return syrup && Array.isArray(syrup.options) ? syrup.options.slice() : [];
+  }
+
   function allowsSyrup(category) {
     return [
-      'coffee-classics', 'signature-coffee', 'cold-coffee', 'not-coffee',
+      'coffee-classics', 'cold-coffee', 'not-coffee',
       'lemonades', 'cold-drinks', 'bubble-tea', 'summer-coffee', 'summer-lemonades'
     ].indexOf(category.id) !== -1;
+  }
+
+  function closeSyrupPickers(except) {
+    document.querySelectorAll('.syrup-picker.is-open').forEach(function (picker) {
+      if (picker === except) return;
+      picker.classList.remove('is-open');
+      var toggle = picker.querySelector('.extra-toggle');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    });
   }
 
   function cartEntryId(name, variant, price) {
@@ -651,7 +753,7 @@
     var action = create('div', 'product-card__action');
     var options = itemOptions(item, category);
     var selectedIndex = 0;
-    var withSyrup = false;
+    var selectedSyrup = '';
     var extraPrice = allowsSyrup(category) ? syrupPrice() : 0;
     var price = create('span', 'product-card__price', money(options[0].price));
     action.appendChild(price);
@@ -660,8 +762,8 @@
     function currentSelection() {
       var selected = options[selectedIndex];
       return {
-        label: [selected.label, withSyrup ? 'сироп' : ''].filter(Boolean).join(' · '),
-        price: selected.price + (withSyrup ? extraPrice : 0)
+        label: [selected.label, selectedSyrup ? 'сироп: ' + selectedSyrup : ''].filter(Boolean).join(' · '),
+        price: selected.price + (selectedSyrup ? extraPrice : 0)
       };
     }
 
@@ -715,20 +817,53 @@
       action.appendChild(create('span', 'product-card__meta', options[0].label));
     }
 
-    if (extraPrice > 0) {
+    if (extraPrice > 0 && syrupOptions().length) {
+      var picker = create('div', 'syrup-picker');
       var syrup = create('button', 'extra-toggle');
       syrup.type = 'button';
-      syrup.setAttribute('aria-pressed', 'false');
-      syrup.appendChild(create('span', '', '+ Сироп'));
+      syrupPickerId += 1;
+      var panelId = 'syrup-options-' + syrupPickerId;
+      syrup.setAttribute('aria-expanded', 'false');
+      syrup.setAttribute('aria-controls', panelId);
+      var syrupLabel = create('span', '', '+ Сироп');
+      syrup.appendChild(syrupLabel);
       syrup.appendChild(create('small', '', money(extraPrice)));
-      syrup.addEventListener('click', function () {
+      var panel = create('div', 'syrup-picker__panel');
+      panel.id = panelId;
+      panel.setAttribute('role', 'listbox');
+      panel.setAttribute('aria-label', 'Выберите сироп для ' + item.name);
+
+      function selectSyrup(name) {
         var previous = currentSelection();
-        withSyrup = !withSyrup;
-        syrup.classList.toggle('is-selected', withSyrup);
-        syrup.setAttribute('aria-pressed', withSyrup ? 'true' : 'false');
+        selectedSyrup = name;
+        syrupLabel.textContent = name || '+ Сироп';
+        syrup.classList.toggle('is-selected', Boolean(name));
+        panel.querySelectorAll('button').forEach(function (choice) {
+          choice.dataset.selected = choice.dataset.value === name ? 'true' : 'false';
+        });
+        picker.classList.remove('is-open');
+        syrup.setAttribute('aria-expanded', 'false');
         migrateSelection(previous);
+      }
+
+      [''].concat(syrupOptions()).forEach(function (name) {
+        var choice = create('button', '', name || 'Без сиропа');
+        choice.type = 'button';
+        choice.dataset.value = name;
+        choice.dataset.selected = name === selectedSyrup ? 'true' : 'false';
+        choice.setAttribute('role', 'option');
+        choice.addEventListener('click', function () { selectSyrup(name); });
+        panel.appendChild(choice);
       });
-      action.appendChild(syrup);
+      syrup.addEventListener('click', function () {
+        var open = !picker.classList.contains('is-open');
+        closeSyrupPickers(picker);
+        picker.classList.toggle('is-open', open);
+        syrup.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      picker.appendChild(syrup);
+      picker.appendChild(panel);
+      action.appendChild(picker);
     }
 
     quantity = createInlineQuantity(item.name, currentSelection);
@@ -907,16 +1042,20 @@
     });
   }
 
+  function openContestDialog() {
+    if (!menuData || !menuData.contest) {
+      showToast('Меню ещё загружается');
+      return;
+    }
+    renderContestProducts();
+    openDialog(dom.contestDialog);
+  }
+
   function initContestDialog() {
-    var openButton = document.querySelector('[data-open-contest]');
+    var openButtons = document.querySelectorAll('[data-open-contest]:not([data-hero-slide])');
     var closeButton = document.querySelector('[data-close-contest]');
-    if (openButton) openButton.addEventListener('click', function () {
-      if (!menuData || !menuData.contest) {
-        showToast('Меню ещё загружается');
-        return;
-      }
-      renderContestProducts();
-      openDialog(dom.contestDialog);
+    openButtons.forEach(function (openButton) {
+      openButton.addEventListener('click', openContestDialog);
     });
     if (closeButton) closeButton.addEventListener('click', function () { closeDialog(dom.contestDialog, 680); });
     attachDialogCancel(dom.contestDialog, 680);
@@ -1259,6 +1398,7 @@
     initHeader();
     initReveal();
     initScrollMedia();
+    initHeroSlider();
     initHeroMotion();
     initParallax();
     initNavigation();
@@ -1270,6 +1410,12 @@
     initForms();
     initConfig();
     initCookieNotice();
+    document.addEventListener('click', function (event) {
+      if (!event.target.closest('.syrup-picker')) closeSyrupPickers();
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeSyrupPickers();
+    });
     loadMenu();
   }
 
