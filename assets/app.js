@@ -1321,9 +1321,7 @@
       ? 'Заказ' + (result.orderId ? ' №' + result.orderId : '') + ' отправлен.'
       : 'Заявка собрана.';
     dom.successText.textContent = sent
-      ? (payload.paymentMethod === 'online'
-        ? 'Заказ создан и ожидает онлайн-оплату. Сотрудник подтвердит наличие и отправит ссылку на оплату.'
-        : 'Мы свяжемся с вами по указанному номеру, чтобы подтвердить детали.')
+      ? 'Мы свяжемся с вами по указанному номеру, чтобы подтвердить детали.'
       : 'Форма работает в демонстрационном режиме: отправка на сервер ещё не подключена.';
     renderSuccessOrder(payload);
     if (config.contactPhoneLabel && config.contactPhoneHref) {
@@ -1347,7 +1345,7 @@
     var payload = {
       source: source,
       fulfillment: isCart ? String(formData.get('fulfillment') || 'pickup') : 'callback',
-      paymentMethod: isCart && action === 'pay' ? 'online' : 'on_receipt',
+      paymentMethod: 'on_receipt',
       customer: customer,
       items: isCart ? cart.map(function (entry) {
         return { name: entry.name, variant: entry.variant, unitPrice: entry.price, quantity: entry.quantity };
