@@ -362,9 +362,7 @@
     var active = 0;
     var timer = 0;
     var pointerStart = null;
-    var pointerDragging = false;
     var suppressSlideClick = false;
-    var SWIPE_THRESHOLD = 42;
 
     function show(index, userInitiated) {
       active = (index + slides.length) % slides.length;
@@ -403,41 +401,19 @@
     });
 
     dom.heroSlider.addEventListener('pointerdown', function (event) {
-      if (event.pointerType === 'mouse' && event.button !== 0) return;
-      pointerStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
-      pointerDragging = false;
-      // Prevent native image drag on desktop so pointermove keeps firing
-      if (event.pointerType === 'mouse') event.preventDefault();
-      try { dom.heroSlider.setPointerCapture(event.pointerId); } catch (e) { /* noop */ }
-    });
-    dom.heroSlider.addEventListener('pointermove', function (event) {
-      if (!pointerStart || event.pointerId !== pointerStart.id) return;
+      pointerStart = { x: event.clientX, y: event.clientY };
+    }, { passive: true });
+    dom.heroSlider.addEventListener('pointerup', function (event) {
+      if (!pointerStart) return;
       var distanceX = event.clientX - pointerStart.x;
       var distanceY = event.clientY - pointerStart.y;
-      if (!pointerDragging && Math.abs(distanceX) > 8 && Math.abs(distanceX) > Math.abs(distanceY)) {
-        pointerDragging = true;
-        suppressSlideClick = true;
-      }
-      if (pointerDragging && event.cancelable) event.preventDefault();
-    });
-    function endSwipe(event) {
-      if (!pointerStart || (event && event.pointerId !== pointerStart.id)) return;
-      var distanceX = event ? event.clientX - pointerStart.x : 0;
-      var distanceY = event ? event.clientY - pointerStart.y : 0;
-      var wasDragging = pointerDragging;
       pointerStart = null;
-      pointerDragging = false;
-      if (!wasDragging) return;
-      if (Math.abs(distanceX) < SWIPE_THRESHOLD || Math.abs(distanceX) < Math.abs(distanceY)) {
-        window.setTimeout(function () { suppressSlideClick = false; }, 80);
-        return;
-      }
+      if (Math.abs(distanceX) < 42 || Math.abs(distanceX) < Math.abs(distanceY)) return;
+      suppressSlideClick = true;
       show(active + (distanceX < 0 ? 1 : -1), true);
-      window.setTimeout(function () { suppressSlideClick = false; }, 120);
-    }
-    dom.heroSlider.addEventListener('pointerup', endSwipe);
-    dom.heroSlider.addEventListener('pointercancel', function (event) { endSwipe(event); });
-    dom.heroSlider.addEventListener('lostpointercapture', function () { pointerStart = null; pointerDragging = false; });
+      window.setTimeout(function () { suppressSlideClick = false; }, 80);
+    }, { passive: true });
+    dom.heroSlider.addEventListener('pointercancel', function () { pointerStart = null; }, { passive: true });
     dom.heroSlider.addEventListener('click', function (event) {
       if (!suppressSlideClick) return;
       event.preventDefault();
@@ -507,11 +483,16 @@
   function renderMenuRail() {
     if (!dom.rail) return;
     dom.rail.replaceChildren();
-    groups.forEach(function (group, index) {
+    var repeatedGroups = groups.concat(groups, groups);
+    var initialLogicalIndex = groups.findIndex(function (group) { return group.id === 'coffee'; });
+    var initialIndex = groups.length + Math.max(0, initialLogicalIndex);
+    repeatedGroups.forEach(function (group, index) {
+      var logicalIndex = index % groups.length;
       var card = create('button', 'menu-card');
       card.type = 'button';
       card.dataset.groupId = group.id;
-      card.dataset.active = index === 0 ? 'true' : 'false';
+      card.dataset.logicalIndex = String(logicalIndex);
+      card.dataset.active = index === initialIndex ? 'true' : 'false';
       card.setAttribute('aria-label', 'Открыть категорию «' + group.title + '»');
 
       var image = create('img', 'menu-card__image');
@@ -519,7 +500,7 @@
       image.alt = '';
       image.width = 1024;
       image.height = 1536;
-      image.loading = index < 2 ? 'eager' : 'lazy';
+      image.loading = index >= groups.length && index < groups.length * 2 ? 'eager' : 'lazy';
       image.decoding = 'async';
       card.appendChild(image);
       card.appendChild(create('span', 'menu-card__shade'));
@@ -530,13 +511,19 @@
       hint.appendChild(icon('icon-arrow-up-right'));
       glass.appendChild(hint);
       card.appendChild(glass);
-      card.addEventListener('click', function () { openMenuGroup(index); });
+      card.addEventListener('click', function () { openMenuGroup(logicalIndex); });
       dom.rail.appendChild(card);
     });
     syncRailInsets();
-    dom.rail.scrollLeft = 0;
-    activeGroupIndex = 0;
-    updateRailState();
+    function placeInitialCoffee() {
+      activeGroupIndex = initialIndex;
+      scrollToGroup(initialIndex, 'auto');
+      updateRailState();
+    }
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(placeInitialCoffee);
+    });
+    window.setTimeout(placeInitialCoffee, 140);
   }
 
   function syncRailInsets() {
@@ -563,6 +550,16 @@
         nearestIndex = index;
       }
     });
+    if (cards.length === groups.length * 3) {
+      var cycleWidth = cards[groups.length].offsetLeft - cards[0].offsetLeft;
+      if (nearestIndex < groups.length) {
+        dom.rail.scrollLeft += cycleWidth;
+        nearestIndex += groups.length;
+      } else if (nearestIndex >= groups.length * 2) {
+        dom.rail.scrollLeft -= cycleWidth;
+        nearestIndex -= groups.length;
+      }
+    }
     activeGroupIndex = nearestIndex;
     cards.forEach(function (card, index) {
       card.dataset.active = index === nearestIndex ? 'true' : 'false';
@@ -573,14 +570,14 @@
     }
   }
 
-  function scrollToGroup(index) {
+  function scrollToGroup(index, behavior) {
     if (!dom.rail) return;
     var cards = dom.rail.children;
     var normalized = (index + cards.length) % cards.length;
     var card = cards[normalized];
     if (!card) return;
     var left = card.offsetLeft - (dom.rail.clientWidth - card.offsetWidth) / 2;
-    dom.rail.scrollTo({ left: left, behavior: reducedMotion ? 'auto' : 'smooth' });
+    dom.rail.scrollTo({ left: left, behavior: behavior || (reducedMotion ? 'auto' : 'smooth') });
   }
 
   function initRailControls() {
@@ -696,10 +693,7 @@
   }
 
   function allowsSyrup(category) {
-    return [
-      'coffee-classics', 'cold-coffee', 'not-coffee',
-      'lemonades', 'cold-drinks', 'bubble-tea', 'summer-coffee', 'summer-lemonades'
-    ].indexOf(category.id) !== -1;
+    return category.id === 'coffee-classics';
   }
 
   function closeSyrupPickers(except) {
@@ -909,11 +903,15 @@
     return section;
   }
 
-  function renderExtras() {
+  function renderExtras(group) {
     dom.menuExtras.replaceChildren();
     if (!menuData || !Array.isArray(menuData.extras) || !menuData.extras.length) return;
+    var extras = group && group.id === 'coffee' ? menuData.extras.filter(function (extra) {
+      return String(extra.name || '').toLowerCase().indexOf('сироп') === -1;
+    }) : [];
+    if (!extras.length) return;
     dom.menuExtras.appendChild(create('h3', '', 'Дополнительно'));
-    menuData.extras.forEach(function (extra) {
+    extras.forEach(function (extra) {
       var row = create('div', 'extras-row');
       row.appendChild(create('span', '', extra.name));
       row.appendChild(create('strong', '', money(extra.price)));
@@ -951,7 +949,7 @@
       dom.categoryTabs.appendChild(tab);
       dom.productList.appendChild(renderCategory(category));
     });
-    renderExtras();
+    renderExtras(group);
     var surface = dom.menuDialog.querySelector('.menu-dialog__surface');
     if (surface) surface.scrollTop = 0;
     var body = dom.menuDialog.querySelector('.menu-dialog__body');
