@@ -450,12 +450,6 @@
       dom.heroSlider.style.setProperty('--hero-drag-x', '0px');
       restart();
     });
-    dom.heroSlider.addEventListener('lostpointercapture', function () {
-      pointerStart = null;
-      heroDragged = false;
-      dom.heroSlider.classList.remove('is-grabbing', 'is-dragging');
-      dom.heroSlider.style.setProperty('--hero-drag-x', '0px');
-    });
     dom.heroSlider.addEventListener('click', function (event) {
       if (!suppressSlideClick) return;
       event.preventDefault();
@@ -525,10 +519,11 @@
   function renderMenuRail() {
     if (!dom.rail) return;
     dom.rail.replaceChildren();
+    var repeatedGroups = groups.concat(groups, groups);
     var initialLogicalIndex = groups.findIndex(function (group) { return group.id === 'coffee'; });
-    var initialIndex = Math.max(0, initialLogicalIndex);
-    groups.forEach(function (group, index) {
-      var logicalIndex = index;
+    var initialIndex = groups.length + Math.max(0, initialLogicalIndex);
+    repeatedGroups.forEach(function (group, index) {
+      var logicalIndex = index % groups.length;
       var card = create('button', 'menu-card');
       card.type = 'button';
       card.dataset.groupId = group.id;
@@ -541,7 +536,7 @@
       image.alt = '';
       image.width = 1024;
       image.height = 1536;
-      image.loading = index === initialIndex ? 'eager' : 'lazy';
+      image.loading = index >= groups.length && index < groups.length * 2 ? 'eager' : 'lazy';
       image.decoding = 'async';
       card.appendChild(image);
       card.appendChild(create('span', 'menu-card__shade'));
@@ -600,9 +595,37 @@
       card.dataset.active = index === nearestIndex ? 'true' : 'false';
     });
     if (dom.railProgress) {
-      var maxScroll = Math.max(1, dom.rail.scrollWidth - dom.rail.clientWidth);
-      dom.railProgress.style.setProperty('--rail-progress', Math.max(.08, dom.rail.scrollLeft / maxScroll).toFixed(3));
+      var logicalIndex = Number(cards[nearestIndex].dataset.logicalIndex || 0);
+      dom.railProgress.style.setProperty('--rail-progress', ((logicalIndex + 1) / groups.length).toFixed(3));
     }
+  }
+
+  function normalizeRailLoop() {
+    if (!dom.rail || dom.rail.classList.contains('is-dragging')) return;
+    var cards = Array.prototype.slice.call(dom.rail.children);
+    if (cards.length !== groups.length * 3) return;
+    updateRailState();
+    if (activeGroupIndex >= groups.length && activeGroupIndex < groups.length * 2) return;
+    var logicalIndex = Number(cards[activeGroupIndex].dataset.logicalIndex || 0);
+    var targetIndex = groups.length + logicalIndex;
+    var currentCard = cards[activeGroupIndex];
+    var targetCard = cards[targetIndex];
+    if (!currentCard || !targetCard) return;
+    var previousBehavior = dom.rail.style.scrollBehavior;
+    var previousSnap = dom.rail.style.scrollSnapType;
+    dom.rail.classList.add('is-normalizing');
+    dom.rail.style.scrollBehavior = 'auto';
+    dom.rail.style.scrollSnapType = 'none';
+    dom.rail.scrollLeft += targetCard.offsetLeft - currentCard.offsetLeft;
+    activeGroupIndex = targetIndex;
+    cards.forEach(function (card, index) {
+      card.dataset.active = index === targetIndex ? 'true' : 'false';
+    });
+    window.requestAnimationFrame(function () {
+      dom.rail.style.scrollBehavior = previousBehavior;
+      dom.rail.style.scrollSnapType = previousSnap;
+      dom.rail.classList.remove('is-normalizing');
+    });
   }
 
   function scrollToGroup(index, behavior) {
@@ -623,6 +646,7 @@
     var startScroll = 0;
     var dragged = false;
     var suppressClick = false;
+    var scrollEndTimer = 0;
     dom.rail.addEventListener('scroll', function () {
       if (!ticking) {
         ticking = true;
@@ -631,7 +655,12 @@
           ticking = false;
         });
       }
+      if (scrollEndTimer) window.clearTimeout(scrollEndTimer);
+      scrollEndTimer = window.setTimeout(normalizeRailLoop, 180);
     }, { passive: true });
+    if ('onscrollend' in dom.rail) {
+      dom.rail.addEventListener('scrollend', normalizeRailLoop, { passive: true });
+    }
     dom.rail.addEventListener('keydown', function (event) {
       if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
         event.preventDefault();
