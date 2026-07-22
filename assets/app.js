@@ -366,6 +366,7 @@
     var timer = 0;
     var pointerStart = null;
     var suppressSlideClick = false;
+    var heroDragged = false;
 
     function show(index, userInitiated) {
       active = (index + slides.length) % slides.length;
@@ -404,19 +405,57 @@
     });
 
     dom.heroSlider.addEventListener('pointerdown', function (event) {
-      pointerStart = { x: event.clientX, y: event.clientY };
-    }, { passive: true });
-    dom.heroSlider.addEventListener('pointerup', function (event) {
-      if (!pointerStart) return;
+      if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      pointerStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+      heroDragged = false;
+      dom.heroSlider.classList.add('is-grabbing');
+      if (event.pointerType === 'mouse') event.preventDefault();
+      try { dom.heroSlider.setPointerCapture(event.pointerId); } catch (_) {}
+      if (timer) window.clearInterval(timer);
+      timer = 0;
+    });
+    dom.heroSlider.addEventListener('pointermove', function (event) {
+      if (!pointerStart || event.pointerId !== pointerStart.id) return;
       var distanceX = event.clientX - pointerStart.x;
       var distanceY = event.clientY - pointerStart.y;
+      if (!heroDragged && Math.abs(distanceX) > 8 && Math.abs(distanceX) > Math.abs(distanceY)) {
+        heroDragged = true;
+        dom.heroSlider.classList.add('is-dragging');
+      }
+      if (!heroDragged) return;
+      dom.heroSlider.style.setProperty('--hero-drag-x', Math.max(-72, Math.min(72, distanceX * .22)).toFixed(1) + 'px');
+      event.preventDefault();
+    });
+    dom.heroSlider.addEventListener('pointerup', function (event) {
+      if (!pointerStart || event.pointerId !== pointerStart.id) return;
+      var distanceX = event.clientX - pointerStart.x;
+      var distanceY = event.clientY - pointerStart.y;
+      if (dom.heroSlider.hasPointerCapture(event.pointerId)) dom.heroSlider.releasePointerCapture(event.pointerId);
       pointerStart = null;
-      if (Math.abs(distanceX) < 42 || Math.abs(distanceX) < Math.abs(distanceY)) return;
-      suppressSlideClick = true;
-      show(active + (distanceX < 0 ? 1 : -1), true);
-      window.setTimeout(function () { suppressSlideClick = false; }, 80);
-    }, { passive: true });
-    dom.heroSlider.addEventListener('pointercancel', function () { pointerStart = null; }, { passive: true });
+      dom.heroSlider.classList.remove('is-grabbing', 'is-dragging');
+      dom.heroSlider.style.setProperty('--hero-drag-x', '0px');
+      suppressSlideClick = heroDragged;
+      if (Math.abs(distanceX) >= 42 && Math.abs(distanceX) > Math.abs(distanceY)) {
+        show(active + (distanceX < 0 ? 1 : -1), true);
+      } else {
+        restart();
+      }
+      window.setTimeout(function () { suppressSlideClick = false; }, 120);
+    });
+    dom.heroSlider.addEventListener('pointercancel', function (event) {
+      if (pointerStart && dom.heroSlider.hasPointerCapture(pointerStart.id)) dom.heroSlider.releasePointerCapture(pointerStart.id);
+      pointerStart = null;
+      heroDragged = false;
+      dom.heroSlider.classList.remove('is-grabbing', 'is-dragging');
+      dom.heroSlider.style.setProperty('--hero-drag-x', '0px');
+      restart();
+    });
+    dom.heroSlider.addEventListener('lostpointercapture', function () {
+      pointerStart = null;
+      heroDragged = false;
+      dom.heroSlider.classList.remove('is-grabbing', 'is-dragging');
+      dom.heroSlider.style.setProperty('--hero-drag-x', '0px');
+    });
     dom.heroSlider.addEventListener('click', function (event) {
       if (!suppressSlideClick) return;
       event.preventDefault();
@@ -486,11 +525,10 @@
   function renderMenuRail() {
     if (!dom.rail) return;
     dom.rail.replaceChildren();
-    var repeatedGroups = groups.concat(groups, groups);
     var initialLogicalIndex = groups.findIndex(function (group) { return group.id === 'coffee'; });
-    var initialIndex = groups.length + Math.max(0, initialLogicalIndex);
-    repeatedGroups.forEach(function (group, index) {
-      var logicalIndex = index % groups.length;
+    var initialIndex = Math.max(0, initialLogicalIndex);
+    groups.forEach(function (group, index) {
+      var logicalIndex = index;
       var card = create('button', 'menu-card');
       card.type = 'button';
       card.dataset.groupId = group.id;
@@ -503,7 +541,7 @@
       image.alt = '';
       image.width = 1024;
       image.height = 1536;
-      image.loading = index >= groups.length && index < groups.length * 2 ? 'eager' : 'lazy';
+      image.loading = index === initialIndex ? 'eager' : 'lazy';
       image.decoding = 'async';
       card.appendChild(image);
       card.appendChild(create('span', 'menu-card__shade'));
@@ -557,16 +595,6 @@
         nearestIndex = index;
       }
     });
-    if (cards.length === groups.length * 3) {
-      var cycleWidth = cards[groups.length].offsetLeft - cards[0].offsetLeft;
-      if (nearestIndex < groups.length) {
-        dom.rail.scrollLeft += cycleWidth;
-        nearestIndex += groups.length;
-      } else if (nearestIndex >= groups.length * 2) {
-        dom.rail.scrollLeft -= cycleWidth;
-        nearestIndex -= groups.length;
-      }
-    }
     activeGroupIndex = nearestIndex;
     cards.forEach(function (card, index) {
       card.dataset.active = index === nearestIndex ? 'true' : 'false';
@@ -580,7 +608,7 @@
   function scrollToGroup(index, behavior) {
     if (!dom.rail) return;
     var cards = dom.rail.children;
-    var normalized = (index + cards.length) % cards.length;
+    var normalized = Math.max(0, Math.min(cards.length - 1, index));
     var card = cards[normalized];
     if (!card) return;
     var left = card.offsetLeft - (dom.rail.clientWidth - card.offsetWidth) / 2;
@@ -1214,7 +1242,7 @@
     }
     renderCart();
     syncInlineQuantities();
-    if (dom.checkoutLabel) dom.checkoutLabel.textContent = 'Оформить · ' + money(cartPrice());
+    if (dom.checkoutLabel) dom.checkoutLabel.textContent = 'Оплатить · ' + money(cartPrice());
   }
 
   function openCart() {
@@ -1235,7 +1263,7 @@
     dom.cartView.hidden = opened;
     dom.checkoutForm.hidden = !opened;
     if (opened) {
-      dom.checkoutLabel.textContent = 'Оформить · ' + money(cartPrice());
+      dom.checkoutLabel.textContent = 'Оплатить · ' + money(cartPrice());
       var firstInput = dom.checkoutForm.querySelector('input[name="name"]');
       window.setTimeout(function () { if (firstInput) firstInput.focus(); }, reducedMotion ? 0 : 320);
     }
