@@ -1389,37 +1389,15 @@ svg {
 }
 
 .consent-check--paper {
-  grid-template-columns: 1.15rem minmax(0, 1fr);
-  gap: .75rem;
-  align-items: center;
-  margin: .35rem 0 .85rem;
-  padding: .8rem .9rem;
-  border: 1px solid rgba(31,27,24,.14);
-  border-radius: .9rem;
-  background: rgba(255,255,255,.38);
   color: var(--ink-soft);
-  font-size: .66rem;
-  line-height: 1.45;
-  transition: border-color .2s ease, background .2s ease;
-}
-
-.consent-check--paper:has(input:checked) {
-  border-color: rgba(31,27,24,.38);
-  background: rgba(255,255,255,.62);
-  color: var(--ink);
 }
 
 .consent-check--paper input {
-  width: 1.05rem;
-  height: 1.05rem;
-  margin: 0;
   accent-color: var(--dark);
 }
 
 .consent-check--paper a {
-  color: var(--ink);
-  text-decoration-color: rgba(31,27,24,.38);
-  text-underline-offset: .18em;
+  text-decoration-color: rgba(31,27,24,.28);
 }
 
 .cart-fab {
@@ -2618,15 +2596,21 @@ dialog.is-closing::backdrop {
 
 .checkout-actions {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr);
+  gap: .55rem;
 }
 
 .checkout-actions .submit-button {
-  width: 100%;
   min-width: 0;
-  justify-content: center;
-  padding-inline: 1rem;
-  gap: .55rem;
+  padding-inline: .9rem;
+  gap: .45rem;
+  font-size: .66rem;
+}
+
+.submit-button--pay {
+  border: 1px solid var(--dark);
+  background: transparent;
+  color: var(--dark);
 }
 
 .checkout-form .field {

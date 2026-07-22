@@ -6,6 +6,7 @@
   var saveData = Boolean(navigator.connection && navigator.connection.saveData);
   var formatMoney = new Intl.NumberFormat('ru-RU');
   var CART_STORAGE_KEY = 'svet-cart-session-v10';
+  var PENDING_PAYMENT_KEY = 'svet-pending-payment-v1';
   var COOKIE_CONSENT_KEY = 'svet-cookie-consent-v2';
   var toastTimer = null;
   var menuData = null;
@@ -1213,7 +1214,7 @@
     }
     renderCart();
     syncInlineQuantities();
-    if (dom.checkoutLabel) dom.checkoutLabel.textContent = 'Оплатить · ' + money(cartPrice());
+    if (dom.checkoutLabel) dom.checkoutLabel.textContent = 'Оформить · ' + money(cartPrice());
   }
 
   function openCart() {
@@ -1234,7 +1235,7 @@
     dom.cartView.hidden = opened;
     dom.checkoutForm.hidden = !opened;
     if (opened) {
-      dom.checkoutLabel.textContent = 'Оплатить · ' + money(cartPrice());
+      dom.checkoutLabel.textContent = 'Оформить · ' + money(cartPrice());
       var firstInput = dom.checkoutForm.querySelector('input[name="name"]');
       window.setTimeout(function () { if (firstInput) firstInput.focus(); }, reducedMotion ? 0 : 320);
     }
@@ -1291,7 +1292,14 @@
     }).then(function (response) {
       return response.json().catch(function () { return {}; }).then(function (data) {
         if (!response.ok || !data.ok) throw new Error(data.error || 'order');
-        return { sent: true, orderId: data.orderId || '', confirmationUrl: data.confirmationUrl || '' };
+        return {
+          sent: true,
+          orderId: data.orderId || '',
+          paymentId: data.paymentId || '',
+          paymentStatus: data.paymentStatus || '',
+          paymentUrl: data.paymentUrl || '',
+          paymentError: Boolean(data.paymentError)
+        };
       });
     });
   }
@@ -1321,7 +1329,15 @@
       ? 'Заказ' + (result.orderId ? ' №' + result.orderId : '') + ' отправлен.'
       : 'Заявка собрана.';
     dom.successText.textContent = sent
-      ? 'Мы свяжемся с вами по указанному номеру, чтобы подтвердить детали.'
+      ? (payload.paymentMethod === 'online'
+        ? (result.paymentStatus === 'succeeded'
+          ? 'Оплата прошла успешно. Заказ уже передан сотрудникам кофейни.'
+          : result.paymentStatus === 'canceled'
+            ? 'Платёж отменён. Заказ сохранён — вы можете оформить его повторно или выбрать оплату при получении.'
+            : result.paymentError
+              ? 'Заказ сохранён, но страницу оплаты открыть не удалось. Мы свяжемся с вами по указанному номеру.'
+              : 'Платёж ещё обрабатывается. Статус заказа обновится автоматически после подтверждения ЮKassa.')
+        : 'Мы свяжемся с вами по указанному номеру, чтобы подтвердить детали.')
       : 'Форма работает в демонстрационном режиме: отправка на сервер ещё не подключена.';
     renderSuccessOrder(payload);
     if (config.contactPhoneLabel && config.contactPhoneHref) {
@@ -1345,7 +1361,7 @@
     var payload = {
       source: source,
       fulfillment: isCart ? String(formData.get('fulfillment') || 'pickup') : 'callback',
-      paymentMethod: isCart ? 'online' : 'on_receipt',
+      paymentMethod: isCart && action === 'pay' ? 'online' : 'on_receipt',
       customer: customer,
       items: isCart ? cart.map(function (entry) {
         return { name: entry.name, variant: entry.variant, unitPrice: entry.price, quantity: entry.quantity };
@@ -1358,15 +1374,15 @@
     statusNode.textContent = '';
     submitPayload(payload)
       .then(function (result) {
-        if (isCart && result.confirmationUrl) {
-          cart = [];
-          saveCart();
-          updateCartUI();
+        if (result.sent && isCart && payload.paymentMethod === 'online' && result.paymentUrl) {
+          try {
+            sessionStorage.setItem(PENDING_PAYMENT_KEY, JSON.stringify({ orderId: result.orderId, payload: payload }));
+          } catch (_) {}
           if (button.querySelector('span')) button.querySelector('span').textContent = 'Переходим к оплате…';
-          window.location.assign(result.confirmationUrl);
+          window.location.assign(result.paymentUrl);
           return;
         }
-        if (result.sent && isCart) {
+        if (result.sent && isCart && payload.paymentMethod !== 'online') {
           cart = [];
           saveCart();
           updateCartUI();
@@ -1386,6 +1402,53 @@
         submitButtons.forEach(function (node) { node.disabled = false; });
         if (button.querySelector('span')) button.querySelector('span').textContent = originalLabel;
       });
+  }
+
+  function initPaymentReturn() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('payment') !== 'return') return;
+    var orderId = String(params.get('order') || '').replace(/\D/g, '').slice(0, 12);
+    if (!orderId) return;
+    var pending = null;
+    try { pending = JSON.parse(sessionStorage.getItem(PENDING_PAYMENT_KEY) || 'null'); } catch (_) {}
+    var payload = pending && pending.payload ? pending.payload : { paymentMethod: 'online', items: [], total: 0 };
+    var attempts = 0;
+
+    function finish(result) {
+      if (result.paymentStatus === 'succeeded') {
+        cart = [];
+        saveCart();
+        updateCartUI();
+        try { sessionStorage.removeItem(PENDING_PAYMENT_KEY); } catch (_) {}
+      }
+      window.history.replaceState({}, '', window.location.pathname + window.location.hash);
+      showSuccess({
+        sent: true,
+        orderId: result.orderId || orderId,
+        paymentStatus: result.paymentStatus || 'pending',
+        paymentError: false
+      }, payload);
+    }
+
+    function check() {
+      attempts += 1;
+      fetch((config.paymentEndpoint || '/api/payments') + '/' + encodeURIComponent(orderId), {
+        headers: { 'X-Svet-Client': 'web-v1' },
+        cache: 'no-store'
+      }).then(function (response) {
+        return response.json().catch(function () { return {}; }).then(function (data) {
+          if (!response.ok || !data.ok) throw new Error(data.error || 'payment');
+          if (data.paymentStatus === 'pending' && attempts < 4) {
+            window.setTimeout(check, 1600);
+            return;
+          }
+          finish(data);
+        });
+      }).catch(function () {
+        finish({ orderId: orderId, paymentStatus: 'pending' });
+      });
+    }
+    window.setTimeout(check, 350);
   }
 
   function initForms() {
@@ -1473,6 +1536,7 @@
     initForms();
     initConfig();
     initCookieNotice();
+    initPaymentReturn();
     document.addEventListener('click', function (event) {
       if (!event.target.closest('.syrup-picker')) closeSyrupPickers();
     });
