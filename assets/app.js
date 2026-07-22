@@ -191,11 +191,13 @@
     if (!dialog || !dialog.open || dialog.classList.contains('is-closing')) return;
     dialog.classList.add('is-closing');
     dialog.classList.remove('is-visible');
+    if (dialog === dom.menuDialog && dom.menuCart) dom.menuCart.hidden = true;
     dialog._closeTimer = window.setTimeout(function () {
       dialog.close();
       dialog.classList.remove('is-closing');
       dialog._closeTimer = null;
       syncBodyLock();
+      if (dialog === dom.menuDialog || dialog === dom.cartDialog) updateCartUI();
     }, reducedMotion ? 10 : (duration || 380));
   }
 
@@ -517,13 +519,17 @@
     syncRailInsets();
     function placeInitialCoffee() {
       activeGroupIndex = initialIndex;
-      scrollToGroup(initialIndex, 'auto');
+      var card = dom.rail.children[initialIndex];
+      if (card) {
+        var previousBehavior = dom.rail.style.scrollBehavior;
+        dom.rail.style.scrollBehavior = 'auto';
+        dom.rail.scrollLeft = card.offsetLeft - (dom.rail.clientWidth - card.offsetWidth) / 2;
+        dom.rail.style.scrollBehavior = previousBehavior;
+      }
       updateRailState();
     }
-    window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(placeInitialCoffee);
-    });
-    window.setTimeout(placeInitialCoffee, 140);
+    placeInitialCoffee();
+    window.requestAnimationFrame(placeInitialCoffee);
   }
 
   function syncRailInsets() {
@@ -705,6 +711,18 @@
     });
   }
 
+  function positionSyrupPicker(picker) {
+    var toggle = picker.querySelector('.extra-toggle');
+    if (!toggle) return;
+    var rect = toggle.getBoundingClientRect();
+    var margin = 18;
+    var spaceAbove = Math.max(128, rect.top - margin);
+    var spaceBelow = Math.max(128, window.innerHeight - rect.bottom - margin);
+    var opensDown = spaceBelow > spaceAbove;
+    picker.classList.toggle('opens-down', opensDown);
+    picker.style.setProperty('--syrup-panel-space', Math.floor(opensDown ? spaceBelow : spaceAbove) + 'px');
+  }
+
   function cartEntryId(name, variant, price) {
     return [name, variant || '', price].join('|');
   }
@@ -876,6 +894,7 @@
       syrup.addEventListener('click', function () {
         var open = !picker.classList.contains('is-open');
         closeSyrupPickers(picker);
+        if (open) positionSyrupPicker(picker);
         picker.classList.toggle('is-open', open);
         syrup.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
@@ -905,11 +924,13 @@
 
   function renderExtras(group) {
     dom.menuExtras.replaceChildren();
+    dom.menuExtras.hidden = true;
     if (!menuData || !Array.isArray(menuData.extras) || !menuData.extras.length) return;
     var extras = group && group.id === 'coffee' ? menuData.extras.filter(function (extra) {
       return String(extra.name || '').toLowerCase().indexOf('сироп') === -1;
     }) : [];
     if (!extras.length) return;
+    dom.menuExtras.hidden = false;
     dom.menuExtras.appendChild(create('h3', '', 'Дополнительно'));
     extras.forEach(function (extra) {
       var row = create('div', 'extras-row');
@@ -966,6 +987,7 @@
     if (!group) return;
     renderMenuGroup(group);
     openDialog(dom.menuDialog);
+    window.requestAnimationFrame(updateCartUI);
   }
 
   function initMenuDialog() {
@@ -1130,6 +1152,16 @@
       center.appendChild(mark);
       center.appendChild(create('h3', '', 'Пока ничего'));
       center.appendChild(create('p', '', 'Откройте меню и добавьте то, что хочется сегодня.'));
+      var chooseButton = create('button', 'cart-empty__menu-button', 'Перейти к выбору');
+      chooseButton.type = 'button';
+      chooseButton.addEventListener('click', function () {
+        closeDialog(dom.cartDialog, 480);
+        window.setTimeout(function () {
+          var menuSection = document.getElementById('menu');
+          if (menuSection) menuSection.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+        }, reducedMotion ? 20 : 500);
+      });
+      center.appendChild(chooseButton);
       empty.appendChild(center);
       dom.cartList.appendChild(empty);
       dom.cartSummary.hidden = true;
@@ -1169,8 +1201,10 @@
       node.textContent = String(count);
       node.hidden = count === 0 && node.classList.contains('header-order__count');
     });
-    dom.cartFab.hidden = count === 0;
-    if (dom.menuCart) dom.menuCart.hidden = count === 0;
+    var menuOpen = Boolean(dom.menuDialog && dom.menuDialog.open && !dom.menuDialog.classList.contains('is-closing'));
+    var cartOpen = Boolean(dom.cartDialog && dom.cartDialog.open && !dom.cartDialog.classList.contains('is-closing'));
+    dom.cartFab.hidden = count === 0 || menuOpen || cartOpen;
+    if (dom.menuCart) dom.menuCart.hidden = count === 0 || !menuOpen;
     if (dom.menuCartTotal) dom.menuCartTotal.textContent = money(cartPrice());
     if (dom.cartFabTotal) {
       dom.cartFabTotal.textContent = count
@@ -1192,6 +1226,7 @@
     dom.checkoutStatus.textContent = '';
     renderCart();
     openDialog(dom.cartDialog);
+    window.requestAnimationFrame(updateCartUI);
   }
 
   function setCheckoutView(opened) {

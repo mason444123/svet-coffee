@@ -16,7 +16,7 @@
   <title>Кофейня «Свет.» в Ишиме — кофе, еда и завтраки</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/contest-peach-passionfruit.webp" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="assets/styles.css?v=11">
+  <link rel="stylesheet" href="assets/styles.css?v=12">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -63,8 +63,8 @@
   }
   </script>
   <script>document.documentElement.classList.add('js', 'intro-pending');</script>
-  <script src="assets/config.js?v=11"></script>
-  <script defer src="assets/app.js?v=11"></script>
+  <script src="assets/config.js?v=12"></script>
+  <script defer src="assets/app.js?v=12"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">К содержанию</a>
@@ -97,13 +97,22 @@
       <div class="hero__media" data-hero-slider aria-label="Специальное меню акции">
         <div class="hero__slides" data-hero-image>
           <button class="hero__slide is-active" type="button" data-hero-slide="0" data-open-contest aria-label="Лимонад персик — маракуйя. Открыть специальное меню и правила акции">
-            <img src="assets/contest-peach-passionfruit.webp" alt="Лимонад персик — маракуйя" width="1086" height="1448" fetchpriority="high" decoding="async">
+            <picture>
+              <source media="(min-width: 48rem)" srcset="assets/contest-peach-desktop.webp">
+              <img src="assets/contest-peach-passionfruit.webp" alt="Лимонад персик — маракуйя" width="1086" height="1448" fetchpriority="high" decoding="async">
+            </picture>
           </button>
           <button class="hero__slide" type="button" data-hero-slide="1" data-open-contest aria-label="Малиново-фисташковый латте. Открыть специальное меню и правила акции">
-            <img src="assets/contest-raspberry-pistachio.webp" alt="Малиново-фисташковый латте" width="1086" height="1448" loading="eager" decoding="async">
+            <picture>
+              <source media="(min-width: 48rem)" srcset="assets/contest-raspberry-desktop.webp">
+              <img src="assets/contest-raspberry-pistachio.webp" alt="Малиново-фисташковый латте" width="1086" height="1448" loading="eager" decoding="async">
+            </picture>
           </button>
           <button class="hero__slide" type="button" data-hero-slide="2" data-open-contest aria-label="Бабл черничный чизкейк. Открыть специальное меню и правила акции">
-            <img src="assets/contest-blueberry.webp" alt="Бабл черничный чизкейк" width="1086" height="1448" loading="eager" decoding="async">
+            <picture>
+              <source media="(min-width: 48rem)" srcset="assets/contest-blueberry-desktop.webp">
+              <img src="assets/contest-blueberry.webp" alt="Бабл черничный чизкейк" width="1086" height="1448" loading="eager" decoding="async">
+            </picture>
           </button>
         </div>
       </div>
@@ -116,19 +125,21 @@
             <p><strong data-hero-slide-name>Лимонад персик — маракуйя</strong><br><span data-hero-slide-price>260 ₽</span> · специальное меню</p>
             <small>Закажите напиток, зарегистрируйте чек и участвуйте в розыгрыше iPhone Air.</small>
           </div>
-          <button class="glass-button hero__cta" type="button" data-open-contest>
-            Заказать · правила
-            <svg aria-hidden="true"><use href="#icon-arrow-down"></use></svg>
-          </button>
-        </div>
-        <div class="hero__controls" data-hero-item>
-          <button type="button" data-hero-prev aria-label="Предыдущий напиток"><svg aria-hidden="true"><use href="#icon-arrow-down"></use></svg></button>
-          <div class="hero__dots" role="group" aria-label="Выбрать напиток">
-            <button class="is-active" type="button" data-hero-dot="0" aria-label="Лимонад персик — маракуйя" aria-current="true"></button>
-            <button type="button" data-hero-dot="1" aria-label="Малиново-фисташковый латте"></button>
-            <button type="button" data-hero-dot="2" aria-label="Бабл черничный чизкейк"></button>
+          <div class="hero__actions">
+            <button class="glass-button hero__cta" type="button" data-open-contest>
+              Заказать
+              <svg aria-hidden="true"><use href="#icon-arrow-down"></use></svg>
+            </button>
+            <div class="hero__controls">
+              <button type="button" data-hero-prev aria-label="Предыдущий напиток"><svg aria-hidden="true"><use href="#icon-arrow-down"></use></svg></button>
+              <div class="hero__dots" role="group" aria-label="Выбрать напиток">
+                <button class="is-active" type="button" data-hero-dot="0" aria-label="Лимонад персик — маракуйя" aria-current="true"></button>
+                <button type="button" data-hero-dot="1" aria-label="Малиново-фисташковый латте"></button>
+                <button type="button" data-hero-dot="2" aria-label="Бабл черничный чизкейк"></button>
+              </div>
+              <button type="button" data-hero-next aria-label="Следующий напиток"><svg aria-hidden="true"><use href="#icon-arrow-down"></use></svg></button>
+            </div>
           </div>
-          <button type="button" data-hero-next aria-label="Следующий напиток"><svg aria-hidden="true"><use href="#icon-arrow-down"></use></svg></button>
         </div>
       </div>
     </section>

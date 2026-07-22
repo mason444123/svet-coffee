@@ -591,9 +591,14 @@ svg {
   transform: scale(1);
 }
 
+.hero__slide picture,
 .hero__slide img {
+  display: block;
   width: 100%;
   height: 100%;
+}
+
+.hero__slide img {
   object-fit: cover;
   object-position: 50% 50%;
 }
@@ -648,10 +653,13 @@ svg {
   margin-bottom: clamp(2rem, 4vw, 3.25rem);
   font-size: clamp(5.4rem, 22vw, 14rem);
   line-height: .69;
+  -webkit-text-stroke: clamp(.55px, .08vw, 1.15px) rgba(255,255,255,.88);
+  paint-order: stroke fill;
   text-shadow:
-    0 .025em .03em rgba(255,255,255,.2),
-    0 .09em .16em rgba(23,15,10,.25),
-    0 .28em .68em rgba(23,15,10,.22);
+    0 .018em .025em rgba(255,255,255,.34),
+    0 .055em .07em rgba(29,19,13,.52),
+    0 .13em .22em rgba(23,15,10,.38),
+    0 .34em .78em rgba(23,15,10,.3);
 }
 
 .hero__footer {
@@ -693,12 +701,25 @@ svg {
   backdrop-filter: blur(7px);
 }
 
+.hero__actions {
+  display: grid;
+  min-width: min(100%, 18rem);
+  justify-items: stretch;
+  gap: .75rem;
+}
+
 .hero__cta {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  min-height: 4rem;
+  padding-inline: 1.5rem;
   border-color: rgba(235,216,190,.9) !important;
-  background: rgba(43,34,27,.16) !important;
+  background: rgba(246,232,214,.2) !important;
+  color: #fffdf9;
+  font-size: .75rem;
+  font-weight: 650;
+  letter-spacing: .08em;
   box-shadow:
     0 0 0 1px rgba(255,255,255,.08) inset,
     0 .8rem 2.5rem rgba(25,17,12,.18),
@@ -751,9 +772,9 @@ svg {
 
 .hero__controls {
   display: flex;
-  margin-top: 1.15rem;
+  margin-top: 0;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: .85rem;
   pointer-events: auto;
 }
@@ -1382,7 +1403,8 @@ svg {
 .cart-fab {
   position: fixed;
   z-index: 90;
-  right: 1rem;
+  right: auto;
+  left: max(1rem, env(safe-area-inset-left));
   bottom: max(1rem, env(safe-area-inset-bottom));
   display: flex;
   min-height: 3.5rem;
@@ -1390,7 +1412,7 @@ svg {
   gap: .65rem;
   padding: .4rem .45rem .4rem .4rem;
   border: 1px solid rgba(255,255,255,.14);
-  border-radius: 999px;
+  border-radius: 1rem;
   background: rgba(27,33,28,.92);
   color: white;
   box-shadow: 0 1rem 3rem rgba(23,20,17,.28);
@@ -1454,6 +1476,7 @@ svg {
 dialog {
   padding: 0;
   border: 0;
+  outline: 0;
 }
 
 dialog::backdrop {
@@ -1560,6 +1583,8 @@ dialog.is-closing::backdrop {
   margin: 0;
   overflow: visible;
   background: transparent;
+  outline: 0;
+  box-shadow: none;
 }
 
 .menu-dialog__surface {
@@ -1591,6 +1616,7 @@ dialog.is-closing::backdrop {
   opacity: 0;
   transform: translate3d(0, 1.25rem, 0) scale(.99);
   transition-duration: .72s;
+  box-shadow: none;
 }
 
 .menu-dialog.is-swiping .menu-dialog__surface {
@@ -1642,17 +1668,19 @@ dialog.is-closing::backdrop {
 }
 
 .menu-dialog__cart {
-  position: fixed;
+  position: absolute;
   z-index: 9;
   bottom: max(1rem, env(safe-area-inset-bottom));
   left: max(1rem, env(safe-area-inset-left));
-  display: grid;
-  min-width: 4.8rem;
-  min-height: 4.8rem;
-  padding: .55rem;
-  place-items: center;
+  display: flex;
+  min-width: 7.5rem;
+  min-height: 3.4rem;
+  padding: .45rem .8rem .45rem .45rem;
+  align-items: center;
+  justify-content: flex-start;
+  gap: .65rem;
   border: 1px solid rgba(255,255,255,.14);
-  border-radius: 1.35rem;
+  border-radius: 1rem;
   background: rgba(27,33,28,.94);
   color: white;
   box-shadow: 0 1rem 3rem rgba(23,20,17,.28);
@@ -1668,8 +1696,8 @@ dialog.is-closing::backdrop {
 
 .menu-dialog__cart > span {
   display: grid;
-  width: 1.85rem;
-  height: 1.85rem;
+  width: 2.35rem;
+  height: 2.35rem;
   place-items: center;
   border-radius: 50%;
   background: rgba(255,255,255,.1);
@@ -1705,7 +1733,7 @@ dialog.is-closing::backdrop {
   position: absolute;
   z-index: 7;
   top: max(5.5rem, calc(env(safe-area-inset-top) + 5rem));
-  right: max(.35rem, env(safe-area-inset-right));
+  right: max(.65rem, env(safe-area-inset-right));
   bottom: max(1.5rem, env(safe-area-inset-bottom));
   width: 2px;
   overflow: hidden;
@@ -1967,7 +1995,7 @@ dialog.is-closing::backdrop {
   bottom: calc(100% + .55rem);
   display: grid;
   width: min(18rem, calc(100vw - 3rem));
-  max-height: min(21rem, 55vh);
+  max-height: min(21rem, var(--syrup-panel-space, 55vh));
   padding: .55rem;
   overflow-y: auto;
   gap: .15rem;
@@ -1983,6 +2011,28 @@ dialog.is-closing::backdrop {
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(132,102,76,.72) transparent;
+}
+
+.syrup-picker.opens-down .syrup-picker__panel {
+  top: calc(100% + .55rem);
+  bottom: auto;
+  transform: translateY(-.8rem) scale(.96);
+  transform-origin: right top;
+}
+
+.syrup-picker.opens-down.is-open .syrup-picker__panel {
+  transform: none;
+}
+
+.syrup-picker__panel::-webkit-scrollbar { width: .46rem; }
+.syrup-picker__panel::-webkit-scrollbar-track { background: transparent; }
+.syrup-picker__panel::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(132,102,76,.7);
+  background-clip: padding-box;
 }
 
 .syrup-picker.is-open .syrup-picker__panel {
@@ -2020,6 +2070,11 @@ dialog.is-closing::backdrop {
   padding: 1.5rem;
   border-radius: 1.25rem;
   background: var(--paper-deep);
+}
+
+.menu-dialog__extras:empty,
+.menu-dialog__extras[hidden] {
+  display: none;
 }
 
 .menu-dialog__extras h3 {
@@ -2365,6 +2420,19 @@ dialog.is-closing::backdrop {
   max-width: 18rem;
   color: var(--ink-soft);
   font-size: .8rem;
+}
+
+.cart-empty__menu-button {
+  min-width: 12rem;
+  margin-top: 1.25rem;
+  padding: .9rem 1.2rem;
+  border: 1px solid rgba(31,27,24,.14);
+  border-radius: 1rem;
+  background: var(--dark);
+  color: white;
+  cursor: pointer;
+  font-size: .72rem;
+  font-weight: 650;
 }
 
 .cart-item {
@@ -2980,7 +3048,7 @@ dialog.is-closing::backdrop {
 
   .dialog-scroll-track {
     top: 4.9rem;
-    right: -2.4rem;
+    right: -2.8rem;
     bottom: 1rem;
   }
 
@@ -3064,10 +3132,6 @@ dialog.is-closing::backdrop {
 }
 
 @media (min-width: 64rem) {
-  .cart-fab {
-    display: none !important;
-  }
-
   .header-order span:first-child {
     display: inline;
   }
@@ -3152,6 +3216,10 @@ dialog.is-closing::backdrop {
   .hero__footer {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .hero__actions {
+    width: 100%;
   }
 
   .hero__eyebrow {
