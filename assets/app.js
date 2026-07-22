@@ -1213,7 +1213,7 @@
     }
     renderCart();
     syncInlineQuantities();
-    if (dom.checkoutLabel) dom.checkoutLabel.textContent = 'Оформить · ' + money(cartPrice());
+    if (dom.checkoutLabel) dom.checkoutLabel.textContent = 'Оплатить · ' + money(cartPrice());
   }
 
   function openCart() {
@@ -1234,7 +1234,7 @@
     dom.cartView.hidden = opened;
     dom.checkoutForm.hidden = !opened;
     if (opened) {
-      dom.checkoutLabel.textContent = 'Оформить · ' + money(cartPrice());
+      dom.checkoutLabel.textContent = 'Оплатить · ' + money(cartPrice());
       var firstInput = dom.checkoutForm.querySelector('input[name="name"]');
       window.setTimeout(function () { if (firstInput) firstInput.focus(); }, reducedMotion ? 0 : 320);
     }
@@ -1291,7 +1291,7 @@
     }).then(function (response) {
       return response.json().catch(function () { return {}; }).then(function (data) {
         if (!response.ok || !data.ok) throw new Error(data.error || 'order');
-        return { sent: true, orderId: data.orderId || '' };
+        return { sent: true, orderId: data.orderId || '', confirmationUrl: data.confirmationUrl || '' };
       });
     });
   }
@@ -1345,7 +1345,7 @@
     var payload = {
       source: source,
       fulfillment: isCart ? String(formData.get('fulfillment') || 'pickup') : 'callback',
-      paymentMethod: 'on_receipt',
+      paymentMethod: isCart ? 'online' : 'on_receipt',
       customer: customer,
       items: isCart ? cart.map(function (entry) {
         return { name: entry.name, variant: entry.variant, unitPrice: entry.price, quantity: entry.quantity };
@@ -1358,6 +1358,14 @@
     statusNode.textContent = '';
     submitPayload(payload)
       .then(function (result) {
+        if (isCart && result.confirmationUrl) {
+          cart = [];
+          saveCart();
+          updateCartUI();
+          if (button.querySelector('span')) button.querySelector('span').textContent = 'Переходим к оплате…';
+          window.location.assign(result.confirmationUrl);
+          return;
+        }
         if (result.sent && isCart) {
           cart = [];
           saveCart();
